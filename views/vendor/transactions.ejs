@@ -37,8 +37,7 @@
           <td>₹<%= t.item_price.toFixed(2) %></td>
           <td><%= t.payment_method %></td>
           <td>
-            <span style="padding:0.3rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600;
-              background:<%= t.status === 'Received' ? 'rgba(255,209,102,0.2);color:#e5a100' : t.status === 'Ready for Shipping' ? 'rgba(72,149,239,0.2);color:#4895ef' : 'rgba(6,214,160,0.2);color:#06d6a0' %>;">
+            <span class="status-badge <%= t.status === 'Received' ? 'status-received' : t.status === 'Ready for Shipping' ? 'status-shipping' : 'status-delivery' %>">
               <%= t.status %>
             </span>
           </td>
@@ -50,7 +49,7 @@
   </div>
   <% } else { %>
   <div class="card card-body text-center">
-    <p style="color:var(--grey-600);">No transactions yet.</p>
+    <p style="color:var(--text-tertiary);">No transactions yet.</p>
   </div>
   <% } %>
 </div>

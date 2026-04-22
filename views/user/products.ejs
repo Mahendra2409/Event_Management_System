@@ -10,7 +10,7 @@
 </nav>
 <div class="main-container">
   <% if (locals.success) { %>
-    <div class="alert alert-success">✅ <%= success %></div>
+    <div class="alert alert-success"><%= success %></div>
   <% } %>
 
   <div class="page-header">
@@ -39,7 +39,7 @@
   </div>
   <% } else { %>
   <div class="card card-body text-center">
-    <p style="color:var(--grey-600);">No products available from this vendor.</p>
+    <p style="color:var(--text-tertiary);">No products available from this vendor.</p>
   </div>
   <% } %>
 

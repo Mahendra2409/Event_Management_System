@@ -15,7 +15,7 @@
       </div>
       <div class="card-body">
         <% if (locals.error) { %>
-          <div class="alert alert-error">⚠️ <%= error %></div>
+          <div class="alert alert-error"><%= error %></div>
         <% } %>
 
         <form action="/admin/manage/add/<%= type %>" method="POST" data-validate>

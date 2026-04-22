@@ -16,10 +16,10 @@
       </div>
       <div class="card-body">
         <% if (locals.error) { %>
-          <div class="alert alert-error">⚠️ <%= error %></div>
+          <div class="alert alert-error"><%= error %></div>
         <% } %>
 
-        <div style="background:var(--grey-100);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
+        <div style="background:var(--bg-muted);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
           <h4 style="margin-bottom:0.5rem;">Items</h4>
           <% cartItems.forEach(item => { %>
             <div style="display:flex;justify-content:space-between;padding:0.3rem 0;font-size:0.9rem;">

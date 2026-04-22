@@ -8,10 +8,10 @@
       </div>
       <div class="card-body">
         <% if (locals.error) { %>
-          <div class="alert alert-error">⚠️ <%= error %></div>
+          <div class="alert alert-error"><%= error %></div>
         <% } %>
         <% if (locals.success) { %>
-          <div class="alert alert-success">✅ <%= success %></div>
+          <div class="alert alert-success"><%= success %></div>
         <% } %>
 
         <div class="role-tabs">

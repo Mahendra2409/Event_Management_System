@@ -1,0 +1,38 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><span class="material-icons-outlined">event</span></div>
+    <div class="brand-text">EMS<span>Event Management</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/vendor" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
+        <span class="material-icons-outlined">dashboard</span> Dashboard
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Products</div>
+      <a href="/vendor/items" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'items' ? ' active' : '' %>">
+        <span class="material-icons-outlined">inventory_2</span> Your Items
+      </a>
+      <a href="/vendor/add-item" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'add-item' ? ' active' : '' %>">
+        <span class="material-icons-outlined">add_circle</span> Add New Item
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Transactions</div>
+      <a href="/vendor/transactions" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'transactions' ? ' active' : '' %>">
+        <span class="material-icons-outlined">receipt_long</span> Transactions
+      </a>
+      <a href="/vendor/request-items" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'requests' ? ' active' : '' %>">
+        <span class="material-icons-outlined">mark_email_unread</span> Item Requests
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <a href="/logout" class="sidebar-link logout-link">
+        <span class="material-icons-outlined">logout</span> Logout
+      </a>
+    </div>
+  </nav>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

@@ -12,10 +12,10 @@
 </nav>
 <div class="main-container">
   <% if (locals.success) { %>
-    <div class="alert alert-success">✅ <%= success %></div>
+    <div class="alert alert-success"><%= success %></div>
   <% } %>
   <% if (locals.error) { %>
-    <div class="alert alert-error">⚠️ <%= error %></div>
+    <div class="alert alert-error"><%= error %></div>
   <% } %>
 
   <div class="page-header">
@@ -87,7 +87,7 @@
   </div>
   <% } else { %>
   <div class="card card-body text-center">
-    <p style="color:var(--grey-600);">No guests added yet.</p>
+    <p style="color:var(--text-tertiary);">No guests added yet.</p>
   </div>
   <% } %>
 </div>

@@ -1,0 +1,29 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><span class="material-icons-outlined">event</span></div>
+    <div class="brand-text">EMS<span>Event Management</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/admin" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
+        <span class="material-icons-outlined">dashboard</span> Dashboard
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Maintenance</div>
+      <a href="/admin/maintain-user" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'maintain-user' ? ' active' : '' %>">
+        <span class="material-icons-outlined">people</span> User Management
+      </a>
+      <a href="/admin/maintain-vendor" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'maintain-vendor' ? ' active' : '' %>">
+        <span class="material-icons-outlined">storefront</span> Vendor Management
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <a href="/logout" class="sidebar-link logout-link">
+        <span class="material-icons-outlined">logout</span> Logout
+      </a>
+    </div>
+  </nav>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!field.value.trim()) {
           isValid = false;
-          field.style.borderColor = '#ef476f';
+          field.style.borderColor = '#dc2626';
           const error = document.createElement('small');
           error.className = 'field-error';
-          error.style.color = '#ef476f';
-          error.style.fontSize = '0.8rem';
-          error.style.marginTop = '0.3rem';
+          error.style.color = '#dc2626';
+          error.style.fontSize = '0.78rem';
+          error.style.marginTop = '0.25rem';
           error.style.display = 'block';
           error.textContent = `${field.getAttribute('data-label') || 'This field'} is required`;
           field.parentElement.appendChild(error);
@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
       emailFields.forEach(field => {
         if (field.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
           isValid = false;
-          field.style.borderColor = '#ef476f';
+          field.style.borderColor = '#dc2626';
           const existing = field.parentElement.querySelector('.field-error');
           if (!existing) {
             const error = document.createElement('small');
             error.className = 'field-error';
-            error.style.color = '#ef476f';
-            error.style.fontSize = '0.8rem';
-            error.style.marginTop = '0.3rem';
+            error.style.color = '#dc2626';
+            error.style.fontSize = '0.78rem';
+            error.style.marginTop = '0.25rem';
             error.style.display = 'block';
             error.textContent = 'Please enter a valid email address';
             field.parentElement.appendChild(error);
@@ -67,8 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
   alerts.forEach(alert => {
     setTimeout(() => {
       alert.style.opacity = '0';
-      alert.style.transform = 'translateY(-10px)';
-      setTimeout(() => alert.remove(), 300);
+      alert.style.transform = 'translateY(-6px)';
+      alert.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+      setTimeout(() => alert.remove(), 250);
     }, 5000);
   });
 

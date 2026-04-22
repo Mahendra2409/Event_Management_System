@@ -13,7 +13,7 @@
       <div class="card-header"><h2>Update Product</h2></div>
       <div class="card-body">
         <% if (locals.error) { %>
-          <div class="alert alert-error">⚠️ <%= error %></div>
+          <div class="alert alert-error"><%= error %></div>
         <% } %>
         <form action="/vendor/update-item/<%= product.id %>" method="POST" enctype="multipart/form-data" data-validate>
           <div class="form-group">

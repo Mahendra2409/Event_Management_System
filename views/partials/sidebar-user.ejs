@@ -1,0 +1,38 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><span class="material-icons-outlined">event</span></div>
+    <div class="brand-text">EMS<span>Event Management</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/user" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
+        <span class="material-icons-outlined">dashboard</span> Dashboard
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Shopping</div>
+      <a href="/user/vendors" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'vendors' ? ' active' : '' %>">
+        <span class="material-icons-outlined">storefront</span> Vendors
+      </a>
+      <a href="/user/cart" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'cart' ? ' active' : '' %>">
+        <span class="material-icons-outlined">shopping_cart</span> Cart
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Events</div>
+      <a href="/user/guest-list" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'guest-list' ? ' active' : '' %>">
+        <span class="material-icons-outlined">group</span> Guest List
+      </a>
+      <a href="/user/order-status" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'order-status' ? ' active' : '' %>">
+        <span class="material-icons-outlined">local_shipping</span> Order Status
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <a href="/logout" class="sidebar-link logout-link">
+        <span class="material-icons-outlined">logout</span> Logout
+      </a>
+    </div>
+  </nav>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

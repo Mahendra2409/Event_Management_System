@@ -18,16 +18,16 @@
     <div class="product-card">
       <div class="product-info" style="padding:1.5rem;">
         <div class="product-name"><%= r.product_name %></div>
-        <p style="color:var(--grey-600);font-size:0.85rem;margin:0.3rem 0;">From: <%= r.user_name %></p>
-        <p style="color:var(--grey-600);font-size:0.85rem;margin-bottom:0.8rem;"><%= r.request_details || 'No details' %></p>
-        <span style="padding:0.3rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:600;background:rgba(255,209,102,0.2);color:#e5a100;"><%= r.status %></span>
+        <p style="color:var(--text-tertiary);font-size:0.85rem;margin:0.3rem 0;">From: <%= r.user_name %></p>
+        <p style="color:var(--text-tertiary);font-size:0.85rem;margin-bottom:0.8rem;"><%= r.request_details || 'No details' %></p>
+        <span class="status-badge status-received"><%= r.status %></span>
       </div>
     </div>
     <% }) %>
   </div>
   <% } else { %>
   <div class="card card-body text-center">
-    <p style="color:var(--grey-600);">No user requests yet.</p>
+    <p style="color:var(--text-tertiary);">No user requests yet.</p>
   </div>
   <% } %>
 </div>

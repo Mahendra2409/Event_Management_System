@@ -11,10 +11,10 @@
 </nav>
 <div class="main-container">
   <% if (locals.success) { %>
-    <div class="alert alert-success">✅ <%= success %></div>
+    <div class="alert alert-success"><%= success %></div>
   <% } %>
   <% if (locals.error) { %>
-    <div class="alert alert-error">⚠️ <%= error %></div>
+    <div class="alert alert-error"><%= error %></div>
   <% } %>
 
   <div class="page-header">
@@ -80,7 +80,7 @@
           </table>
         </div>
         <% } else { %>
-          <div class="text-center" style="padding:2rem;color:var(--grey-600);">
+          <div class="text-center" style="padding:2rem;color:var(--text-tertiary);">
             <p>No products yet. Add your first product!</p>
           </div>
         <% } %>

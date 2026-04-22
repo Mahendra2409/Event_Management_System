@@ -37,8 +37,7 @@
           <td><%= o.email %></td>
           <td><%= o.address %>, <%= o.city %>, <%= o.state %> - <%= o.pincode %></td>
           <td>
-            <span style="padding:0.3rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:600;
-              background:<%= o.status === 'Received' ? 'rgba(255,209,102,0.2);color:#e5a100' : o.status === 'Ready for Shipping' ? 'rgba(72,149,239,0.2);color:#4895ef' : o.status === 'Out For Delivery' ? 'rgba(6,214,160,0.2);color:#06d6a0' : 'rgba(239,71,111,0.2);color:#ef476f' %>;">
+            <span class="status-badge <%= o.status === 'Received' ? 'status-received' : o.status === 'Ready for Shipping' ? 'status-shipping' : o.status === 'Out For Delivery' ? 'status-delivery' : 'status-cancelled' %>">
               <%= o.status %>
             </span>
           </td>
@@ -50,7 +49,7 @@
   </div>
   <% } else { %>
   <div class="card card-body text-center">
-    <p style="color:var(--grey-600);margin-bottom:1rem;">No orders yet.</p>
+    <p style="color:var(--text-tertiary);margin-bottom:1rem;">No orders yet.</p>
     <a href="/user/vendors" class="btn btn-primary">Start Shopping</a>
   </div>
   <% } %>

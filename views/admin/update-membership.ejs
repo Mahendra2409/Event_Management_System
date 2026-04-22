@@ -15,10 +15,10 @@
       </div>
       <div class="card-body">
         <% if (locals.error) { %>
-          <div class="alert alert-error">⚠️ <%= error %></div>
+          <div class="alert alert-error"><%= error %></div>
         <% } %>
         <% if (locals.success) { %>
-          <div class="alert alert-success">✅ <%= success %></div>
+          <div class="alert alert-success"><%= success %></div>
         <% } %>
 
         <!-- Step 1: Look up by Membership Number -->
@@ -31,10 +31,10 @@
         </form>
 
         <% if (membership) { %>
-        <hr style="margin:1.5rem 0;border:1px solid var(--grey-200);">
+        <hr style="margin:1.5rem 0;border:1px solid var(--border);">
         <h3 style="margin-bottom:1rem;font-size:1.1rem;">Membership Details</h3>
 
-        <div style="background:var(--grey-100);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
+        <div style="background:var(--bg-muted);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
           <div class="detail-row d-flex justify-between mb-1">
             <span>ID:</span> <strong>#<%= membership.id %></strong>
           </div>

@@ -12,7 +12,7 @@
 </nav>
 <div class="main-container">
   <% if (locals.success) { %>
-    <div class="alert alert-success">✅ <%= success %></div>
+    <div class="alert alert-success"><%= success %></div>
   <% } %>
 
   <div class="page-header">
@@ -37,15 +37,15 @@
     <% vendors.forEach(v => { %>
     <div class="vendor-card">
       <h3><%= v.name %></h3>
-      <div class="vendor-category">📌 <%= v.category %></div>
-      <div class="vendor-email">📧 <%= v.email %></div>
+      <div class="vendor-category"><span class="material-icons-outlined" style="font-size:0.95rem;">sell</span> <%= v.category %></div>
+      <div class="vendor-email"><span class="material-icons-outlined" style="font-size:0.95rem;">mail</span> <%= v.email %></div>
       <a href="/user/vendors/<%= v.id %>/products" class="btn">Shop Items</a>
     </div>
     <% }) %>
   </div>
   <% } else { %>
   <div class="card card-body text-center">
-    <p style="color:var(--grey-600);">No vendors found for this category.</p>
+    <p style="color:var(--text-tertiary);">No vendors found for this category.</p>
   </div>
   <% } %>
 </div>

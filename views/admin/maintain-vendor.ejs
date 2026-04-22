@@ -10,10 +10,10 @@
 </nav>
 <div class="main-container">
   <% if (locals.success) { %>
-    <div class="alert alert-success">✅ <%= success %></div>
+    <div class="alert alert-success"><%= success %></div>
   <% } %>
   <% if (locals.error) { %>
-    <div class="alert alert-error">⚠️ <%= error %></div>
+    <div class="alert alert-error"><%= error %></div>
   <% } %>
 
   <div class="page-header">
@@ -22,7 +22,7 @@
   </div>
 
   <div class="maintenance-section">
-    <h3>📋 Membership</h3>
+    <h3><span class="material-icons-outlined">card_membership</span> Membership</h3>
     <div class="maintenance-actions">
       <a href="/admin/membership/add/vendor" class="btn btn-primary">Add Membership</a>
       <a href="/admin/membership/update/vendor" class="btn btn-outline">Update Membership</a>
@@ -30,7 +30,7 @@
   </div>
 
   <div class="maintenance-section">
-    <h3>🏪 Vendor Management</h3>
+    <h3><span class="material-icons-outlined">storefront</span> Vendor Management</h3>
     <div class="maintenance-actions">
       <a href="/admin/manage/add/vendor" class="btn btn-primary">Add Vendor</a>
       <a href="/admin/manage/update/vendor" class="btn btn-outline">Update / Delete Vendor</a>
