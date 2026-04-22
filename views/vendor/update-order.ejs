@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Vendor</div>
+  <div class="navbar-links">
+    <a href="/vendor" class="nav-link">Home</a>
+    <a href="/vendor/product-status" class="nav-link">Product Status</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <div class="auth-container">
+    <div class="card">
+      <div class="card-header">
+        <h2>Update Order Status</h2>
+      </div>
+      <div class="card-body">
+        <% if (locals.error) { %>
+          <div class="alert alert-error"><%= error %></div>
+        <% } %>
+        <% if (locals.success) { %>
+          <div class="alert alert-success"><%= success %></div>
+        <% } %>
+
+        <div style="background:var(--bg-muted);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
+          <div class="detail-row d-flex justify-between mb-1">
+            <span>Order #:</span> <strong><%= order.id %></strong>
+          </div>
+          <div class="detail-row d-flex justify-between mb-1">
+            <span>Customer:</span> <strong><%= order.name %></strong>
+          </div>
+          <div class="detail-row d-flex justify-between mb-1">
+            <span>Email:</span> <strong><%= order.email %></strong>
+          </div>
+          <div class="detail-row d-flex justify-between mb-1">
+            <span>Address:</span> <strong><%= order.address %></strong>
+          </div>
+          <div class="detail-row d-flex justify-between mb-1">
+            <span>Current Status:</span>
+            <strong style="color:<%= order.status === 'Received' ? 'var(--warning)' : order.status === 'Ready for Shipping' ? 'var(--primary)' : 'var(--success)' %>">
+              <%= order.status %>
+            </strong>
+          </div>
+        </div>
+
+        <form action="/vendor/update-order/<%= order.id %>" method="POST" data-validate>
+          <div class="form-group">
+            <label>Update Status *</label>
+            <div class="radio-group" style="flex-direction:column;">
+              <label class="radio-option">
+                <input type="radio" name="status" value="Received" <%= order.status === 'Received' ? 'checked' : '' %>>
+                <span>Received</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="status" value="Ready for Shipping" <%= order.status === 'Ready for Shipping' ? 'checked' : '' %>>
+                <span>Ready for Shipping</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="status" value="Out For Delivery" <%= order.status === 'Out For Delivery' ? 'checked' : '' %>>
+                <span>Out For Delivery</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Vendor</div>
+  <div class="navbar-links">
+    <a href="/vendor" class="nav-link">Home</a>
+    <a href="/vendor/product-status" class="nav-link active">Product Status</a>
+    <a href="/vendor/transactions" class="nav-link">Transactions</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <div class="page-header">
+    <h1>Product Status</h1>
+    <p>Track orders containing your products</p>
+  </div>
+  <% if (orders && orders.length > 0) { %>
+  <div class="table-container card">
+    <table>
+      <thead>
+        <tr>
+          <th>Order #</th>
+          <th>Customer</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+        <tr>
+          <td>#<%= order.id %></td>
+          <td><%= order.name %></td>
+          <td><%= order.email %></td>
+          <td><%= order.address %></td>
+          <td>
+            <span class="status-badge <%= order.status === 'Received' ? 'status-received' : order.status === 'Ready for Shipping' ? 'status-shipping' : order.status === 'Out For Delivery' ? 'status-delivery' : 'status-cancelled' %>">
+              <%= order.status %>
+            </span>
+          </td>
+          <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+          <td>
+            <a href="/vendor/update-order/<%= order.id %>" class="btn btn-sm btn-primary">Update</a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } else { %>
+  <div class="card card-body text-center">
+    <p style="color:var(--text-tertiary);">No orders yet.</p>
+  </div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

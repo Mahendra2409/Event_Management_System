@@ -44,6 +44,11 @@
           <div class="detail-row d-flex justify-between mb-1">
             <span>Email:</span> <strong><%= membership.member_email %></strong>
           </div>
+          <% if (membership.member_phone) { %>
+          <div class="detail-row d-flex justify-between mb-1">
+            <span>Phone:</span> <strong><%= membership.member_phone %></strong>
+          </div>
+          <% } %>
           <div class="detail-row d-flex justify-between mb-1">
             <span>Duration:</span> <strong><%= membership.duration %></strong>
           </div>
