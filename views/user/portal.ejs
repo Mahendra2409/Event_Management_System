@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> User</div>
+  <div class="navbar-links">
+    <a href="/user" class="nav-link active">Home</a>
+    <a href="/user/vendors" class="nav-link">Vendor</a>
+    <a href="/user/cart" class="nav-link">Cart</a>
+    <a href="/user/guest-list" class="nav-link">Guest List</a>
+    <a href="/user/order-status" class="nav-link">Order Status</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <% if (locals.success) { %>
+    <div class="alert alert-success">✅ <%= success %></div>
+  <% } %>
+  <div class="dashboard-header">
+    <h1>Welcome, <span style="color:var(--accent)"><%= user.name %></span></h1>
+    <p>User Dashboard</p>
+  </div>
+  <div class="dashboard-grid">
+    <a href="/user/vendors" class="dashboard-card">
+      <div class="icon">🏪</div>
+      <h3>Vendor</h3>
+      <p>Browse vendors and their products</p>
+    </a>
+    <a href="/user/cart" class="dashboard-card">
+      <div class="icon">🛒</div>
+      <h3>Cart</h3>
+      <p>View your shopping cart</p>
+    </a>
+    <a href="/user/guest-list" class="dashboard-card">
+      <div class="icon">📋</div>
+      <h3>Guest List</h3>
+      <p>Manage event invitations</p>
+    </a>
+    <a href="/user/order-status" class="dashboard-card">
+      <div class="icon">📦</div>
+      <h3>Order Status</h3>
+      <p>Track your orders</p>
+    </a>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+<div class="main-container">
+  <div class="auth-container">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="auth-title">Event Management System</h2>
+        <p class="auth-subtitle">Admin Sign Up</p>
+      </div>
+      <div class="card-body">
+        <% if (locals.error) { %>
+          <div class="alert alert-error">⚠️ <%= error %></div>
+        <% } %>
+
+        <form action="/signup/admin" method="POST" data-validate>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Enter your name" required data-label="Name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required data-label="Email">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required data-label="Password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+        </form>
+        <div class="auth-footer mt-2">
+          Already have an account? <a href="/login">Login</a> | <a href="/">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

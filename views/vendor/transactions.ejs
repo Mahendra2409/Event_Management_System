@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Vendor</div>
+  <div class="navbar-links">
+    <a href="/vendor" class="nav-link">Home</a>
+    <a href="/vendor/transactions" class="nav-link active">Transactions</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <div class="page-header">
+    <h1>Transactions</h1>
+    <p>User orders and payment history</p>
+  </div>
+  <% if (transactions && transactions.length > 0) { %>
+  <div class="table-container card">
+    <table>
+      <thead>
+        <tr>
+          <th>Order #</th>
+          <th>User</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% transactions.forEach(t => { %>
+        <tr>
+          <td>#<%= t.id %></td>
+          <td><%= t.user_name %></td>
+          <td><%= t.product_name %></td>
+          <td><%= t.quantity %></td>
+          <td>₹<%= t.item_price.toFixed(2) %></td>
+          <td><%= t.payment_method %></td>
+          <td>
+            <span style="padding:0.3rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600;
+              background:<%= t.status === 'Received' ? 'rgba(255,209,102,0.2);color:#e5a100' : t.status === 'Ready for Shipping' ? 'rgba(72,149,239,0.2);color:#4895ef' : 'rgba(6,214,160,0.2);color:#06d6a0' %>;">
+              <%= t.status %>
+            </span>
+          </td>
+          <td><%= new Date(t.created_at).toLocaleDateString() %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } else { %>
+  <div class="card card-body text-center">
+    <p style="color:var(--grey-600);">No transactions yet.</p>
+  </div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

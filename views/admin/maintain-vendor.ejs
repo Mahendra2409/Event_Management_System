@@ -1,0 +1,40 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Admin</div>
+  <div class="navbar-links">
+    <a href="/admin" class="nav-link">Home</a>
+    <a href="/admin/maintain-user" class="nav-link">Maintain User</a>
+    <a href="/admin/maintain-vendor" class="nav-link active">Maintain Vendor</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <% if (locals.success) { %>
+    <div class="alert alert-success">✅ <%= success %></div>
+  <% } %>
+  <% if (locals.error) { %>
+    <div class="alert alert-error">⚠️ <%= error %></div>
+  <% } %>
+
+  <div class="page-header">
+    <h1>Maintain Vendor</h1>
+    <p>Manage vendor memberships and vendor accounts</p>
+  </div>
+
+  <div class="maintenance-section">
+    <h3>📋 Membership</h3>
+    <div class="maintenance-actions">
+      <a href="/admin/membership/add/vendor" class="btn btn-primary">Add Membership</a>
+      <a href="/admin/membership/update/vendor" class="btn btn-outline">Update Membership</a>
+    </div>
+  </div>
+
+  <div class="maintenance-section">
+    <h3>🏪 Vendor Management</h3>
+    <div class="maintenance-actions">
+      <a href="/admin/manage/add/vendor" class="btn btn-primary">Add Vendor</a>
+      <a href="/admin/manage/update/vendor" class="btn btn-outline">Update / Delete Vendor</a>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

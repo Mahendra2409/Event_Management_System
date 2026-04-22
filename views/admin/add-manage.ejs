@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Admin</div>
+  <div class="navbar-links">
+    <a href="/admin" class="nav-link">Home</a>
+    <a href="/admin/maintain-<%= type %>" class="nav-link">Back</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <div class="auth-container">
+    <div class="card">
+      <div class="card-header">
+        <h2>Add <%= type.charAt(0).toUpperCase() + type.slice(1) %></h2>
+      </div>
+      <div class="card-body">
+        <% if (locals.error) { %>
+          <div class="alert alert-error">⚠️ <%= error %></div>
+        <% } %>
+
+        <form action="/admin/manage/add/<%= type %>" method="POST" data-validate>
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Enter name" required data-label="Name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter email" required data-label="Email">
+          </div>
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required data-label="Password">
+          </div>
+          <% if (type === 'vendor') { %>
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <select name="category" id="category" class="form-control" required data-label="Category">
+              <option value="">Select Category</option>
+              <option value="Catering">Catering</option>
+              <option value="Florist">Florist</option>
+              <option value="Decoration">Decoration</option>
+              <option value="Lighting">Lighting</option>
+            </select>
+          </div>
+          <% } %>
+          <div class="btn-row">
+            <a href="/admin/maintain-<%= type %>" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Add <%= type.charAt(0).toUpperCase() + type.slice(1) %></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

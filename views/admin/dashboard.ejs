@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Admin</div>
+  <div class="navbar-links">
+    <a href="/admin" class="nav-link active">Home</a>
+    <a href="/admin/maintain-user" class="nav-link">Maintain User</a>
+    <a href="/admin/maintain-vendor" class="nav-link">Maintain Vendor</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <% if (locals.success) { %>
+    <div class="alert alert-success">✅ <%= success %></div>
+  <% } %>
+  <% if (locals.error) { %>
+    <div class="alert alert-error">⚠️ <%= error %></div>
+  <% } %>
+
+  <div class="dashboard-header">
+    <h1>Welcome, <span style="color:var(--accent)"><%= user.name %></span></h1>
+    <p>Admin Dashboard - Maintenance Menu</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <a href="/admin/maintain-user" class="dashboard-card">
+      <div class="icon">👥</div>
+      <h3>Maintain User</h3>
+      <p>Manage user memberships and accounts</p>
+    </a>
+    <a href="/admin/maintain-vendor" class="dashboard-card">
+      <div class="icon">🏪</div>
+      <h3>Maintain Vendor</h3>
+      <p>Manage vendor memberships and accounts</p>
+    </a>
+  </div>
+</div>
+<%- include('../partials/footer') %>

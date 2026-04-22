@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> User</div>
+  <div class="navbar-links">
+    <a href="/user" class="nav-link">Home</a>
+    <a href="/user/vendors" class="nav-link active">Vendor</a>
+    <a href="/user/cart" class="nav-link">Cart</a>
+    <a href="/user/guest-list" class="nav-link">Guest List</a>
+    <a href="/user/order-status" class="nav-link">Order Status</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <% if (locals.success) { %>
+    <div class="alert alert-success">✅ <%= success %></div>
+  <% } %>
+
+  <div class="page-header">
+    <h1>Vendors</h1>
+    <p>Browse vendors by category</p>
+  </div>
+
+  <div class="filter-bar">
+    <label for="category-filter">Category:</label>
+    <form action="/user/vendors" method="GET" style="display:flex;gap:0.5rem;align-items:center;">
+      <select name="category" id="category-filter" class="form-control" style="width:200px;" onchange="this.form.submit()">
+        <option value="all" <%= selectedCategory === 'all' ? 'selected' : '' %>>All Categories</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat %>" <%= selectedCategory === cat ? 'selected' : '' %>><%= cat %></option>
+        <% }) %>
+      </select>
+    </form>
+  </div>
+
+  <% if (vendors && vendors.length > 0) { %>
+  <div class="products-grid">
+    <% vendors.forEach(v => { %>
+    <div class="vendor-card">
+      <h3><%= v.name %></h3>
+      <div class="vendor-category">📌 <%= v.category %></div>
+      <div class="vendor-email">📧 <%= v.email %></div>
+      <a href="/user/vendors/<%= v.id %>/products" class="btn">Shop Items</a>
+    </div>
+    <% }) %>
+  </div>
+  <% } else { %>
+  <div class="card card-body text-center">
+    <p style="color:var(--grey-600);">No vendors found for this category.</p>
+  </div>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

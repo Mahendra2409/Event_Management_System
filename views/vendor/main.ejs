@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+<nav class="navbar">
+  <div class="navbar-brand"><span>EMS</span> Vendor</div>
+  <div class="navbar-links">
+    <a href="/vendor" class="nav-link active">Home</a>
+    <a href="/vendor/items" class="nav-link">Your Items</a>
+    <a href="/vendor/add-item" class="nav-link">Add New Item</a>
+    <a href="/vendor/transactions" class="nav-link">Transactions</a>
+    <a href="/logout" class="nav-link logout">LogOut</a>
+  </div>
+</nav>
+<div class="main-container">
+  <% if (locals.success) { %>
+    <div class="alert alert-success">✅ <%= success %></div>
+  <% } %>
+  <div class="dashboard-header">
+    <h1>Welcome, <span style="color:var(--accent)"><%= user.name %></span></h1>
+    <p>Vendor Dashboard</p>
+  </div>
+  <div class="dashboard-grid">
+    <a href="/vendor/items" class="dashboard-card">
+      <div class="icon">📦</div>
+      <h3>Your Items</h3>
+      <p>View and manage your products</p>
+    </a>
+    <a href="/vendor/add-item" class="dashboard-card">
+      <div class="icon">➕</div>
+      <h3>Add New Item</h3>
+      <p>Add a new product to your catalog</p>
+    </a>
+    <a href="/vendor/transactions" class="dashboard-card">
+      <div class="icon">💰</div>
+      <h3>Transactions</h3>
+      <p>View user requests and orders</p>
+    </a>
+    <a href="/vendor/product-status" class="dashboard-card">
+      <div class="icon">📊</div>
+      <h3>Product Status</h3>
+      <p>Track order statuses</p>
+    </a>
+    <a href="/vendor/request-items" class="dashboard-card">
+      <div class="icon">📝</div>
+      <h3>Request Items</h3>
+      <p>View item requests from users</p>
+    </a>
+  </div>
+</div>
+<%- include('../partials/footer') %>
