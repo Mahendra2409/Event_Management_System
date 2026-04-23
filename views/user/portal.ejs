@@ -1,44 +1,126 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link active">Home</a>
-    <a href="/user/vendors" class="nav-link">Vendor</a>
-    <a href="/user/cart" class="nav-link">Cart</a>
-    <a href="/user/guest-list" class="nav-link">Guest List</a>
-    <a href="/user/order-status" class="nav-link">Order Status</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <% if (locals.success) { %>
-    <div class="alert alert-success"><%= success %></div>
-  <% } %>
-  <div class="dashboard-header">
-    <h1>Welcome, <%= user.name %></h1>
-    <p>User Dashboard</p>
-  </div>
-  <div class="dashboard-grid">
-    <a href="/user/vendors" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">storefront</span></div>
-      <h3>Vendor</h3>
-      <p>Browse vendors and their products</p>
-    </a>
-    <a href="/user/cart" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">shopping_cart</span></div>
-      <h3>Cart</h3>
-      <p>View your shopping cart</p>
-    </a>
-    <a href="/user/guest-list" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">group</span></div>
-      <h3>Guest List</h3>
-      <p>Manage event invitations</p>
-    </a>
-    <a href="/user/order-status" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">local_shipping</span></div>
-      <h3>Order Status</h3>
-      <p>Track your orders</p>
-    </a>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+
+      <div class="welcome-banner">
+        <h1>Welcome back, <%= user.name %>! 👋</h1>
+        <p>Manage your events, explore vendors, track orders and make your event amazing.</p>
+      </div>
+
+      <!-- Order Status Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">receipt_long</span></div><div><div class="stat-num"><%= orderStats.total %></div><div class="stat-label">Total Orders</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon orange"><span class="material-icons-outlined">hourglass_top</span></div><div><div class="stat-num"><%= orderStats.pending %></div><div class="stat-label">Pending</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon blue"><span class="material-icons-outlined">local_shipping</span></div><div><div class="stat-num"><%= orderStats.shipped %></div><div class="stat-label">Shipped</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">check_circle</span></div><div><div class="stat-num"><%= orderStats.delivered %></div><div class="stat-label">Delivered</div></div></div>
+      </div>
+
+      <div class="dashboard-grid">
+        <a href="/user/vendors" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">storefront</span></div>
+          <div><h3>Vendor</h3><p>Browse and explore vendors by category.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+        <a href="/user/cart" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">shopping_cart</span></div>
+          <div><h3>Cart</h3><p>View items in your cart and proceed to checkout.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+        <a href="/user/guest-list" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">group</span></div>
+          <div><h3>Guest List</h3><p>Manage your guest list for the event.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+        <a href="/user/order-status" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">receipt_long</span></div>
+          <div><h3>Order Status</h3><p>Track the status of your orders.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+        <a href="/user/order-status" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">inventory</span></div>
+          <div><h3>Product Status</h3><p>Check product availability and status.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+        <a href="/user/vendors" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">description</span></div>
+          <div><h3>Request Item</h3><p>Request new items from vendors.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+        <a href="/user/vendors" class="dash-card">
+          <div class="dash-card-icon"><span class="material-icons-outlined">visibility</span></div>
+          <div><h3>View Product</h3><p>View products and add to cart.</p></div>
+          <span class="material-icons-outlined arrow">arrow_forward</span>
+        </a>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <!-- Recent Orders with Status Tags -->
+        <div class="section-card">
+          <h3>Recent Orders <a href="/user/order-status">View All</a></h3>
+          <% if (recentOrders && recentOrders.length > 0) { %>
+            <% recentOrders.forEach(o => { %>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-lt)">
+                <div>
+                  <strong style="font-size:13px"><%= o.name || 'Order' %></strong>
+                  <br><small style="color:var(--text-tri)">Order #<%= o.id %> • ₹<%= o.total_amount ? o.total_amount.toFixed(2) : '0.00' %></small>
+                </div>
+                <span class="status-badge <%= o.status === 'Out For Delivery' ? 'status-delivered' : o.status === 'Ready for Shipping' ? 'status-shipped' : o.status === 'Cancelled' ? 'status-cancelled' : 'status-pending' %>"><%= o.status %></span>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div style="text-align:center;padding:24px 0">
+              <span class="material-icons-outlined" style="font-size:32px;color:var(--text-tri)">receipt_long</span>
+              <p style="color:var(--text-tri);font-size:13px;margin-top:4px">No orders yet. <a href="/user/vendors" style="color:var(--primary)">Browse vendors</a></p>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Upcoming Events Box -->
+        <div class="section-card">
+          <h3><span class="material-icons-outlined" style="font-size:18px;color:var(--primary)">event</span> Upcoming Events</h3>
+          <div style="padding:16px 0">
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--primary-light);border-radius:var(--radius-sm);margin-bottom:10px">
+              <div style="width:44px;height:44px;border-radius:10px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;line-height:1">
+                <div style="font-size:14px;font-weight:700"><%= new Date().getDate() %></div>
+                <div style="font-size:9px;text-transform:uppercase"><%= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][new Date().getMonth()] %></div>
+              </div>
+              <div>
+                <strong style="font-size:13px">Your Event Planning</strong>
+                <p style="font-size:12px;color:var(--text-sec);margin:2px 0">Browse vendors and finalize your event requirements.</p>
+                <span class="status-badge status-active">Active</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--muted);border-radius:var(--radius-sm)">
+              <div style="width:44px;height:44px;border-radius:10px;background:var(--border);color:var(--text-sec);display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;line-height:1">
+                <div style="font-size:14px;font-weight:700"><%= new Date().getDate() + 7 > 28 ? 1 : new Date().getDate() + 7 %></div>
+                <div style="font-size:9px;text-transform:uppercase"><%= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][new Date().getMonth()] %></div>
+              </div>
+              <div>
+                <strong style="font-size:13px">Event Day</strong>
+                <p style="font-size:12px;color:var(--text-sec);margin:2px 0">Ensure all orders are delivered and guests confirmed.</p>
+                <span class="status-badge status-pending">Upcoming</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-card mt-2">
+        <h3>Quick Actions</h3>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <a href="/user/vendors" class="quick-action"><span class="material-icons-outlined">storefront</span><span>Browse Vendors</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+          <a href="/user/cart" class="quick-action"><span class="material-icons-outlined">add_shopping_cart</span><span>Add Items to Cart</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+          <a href="/user/order-status" class="quick-action"><span class="material-icons-outlined">local_shipping</span><span>Track Your Orders</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+          <a href="/user/guest-list" class="quick-action"><span class="material-icons-outlined">group</span><span>Manage Guest List</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

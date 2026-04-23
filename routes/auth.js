@@ -8,9 +8,18 @@ router.get('/', (req, res) => {
   res.render('index', { title: 'Event Management System' });
 });
 
-// Login Page
+// Login Page - default redirects to user
 router.get('/login', (req, res) => {
-  res.render('login', { title: 'Login - Event Management System' });
+  res.render('login', { title: 'Login - Event Management System', loginRole: 'user' });
+});
+router.get('/login/admin', (req, res) => {
+  res.render('login', { title: 'Admin Login - EMS', loginRole: 'admin' });
+});
+router.get('/login/user', (req, res) => {
+  res.render('login', { title: 'User Login - EMS', loginRole: 'user' });
+});
+router.get('/login/vendor', (req, res) => {
+  res.render('login', { title: 'Vendor Login - EMS', loginRole: 'vendor' });
 });
 
 // Login POST
@@ -135,7 +144,7 @@ router.get('/signup/vendor', (req, res) => {
 
 // Vendor Signup POST
 router.post('/signup/vendor', (req, res) => {
-  const { name, email, password, category } = req.body;
+  const { name, email, password, category, phone, location } = req.body;
 
   if (!name || !email || !password || !category) {
     req.session.error = 'All fields are required.';
@@ -150,7 +159,7 @@ router.post('/signup/vendor', (req, res) => {
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
-    db.prepare('INSERT INTO vendors (name, email, password, category) VALUES (?, ?, ?, ?)').run(name, email, hashedPassword, category);
+    db.prepare('INSERT INTO vendors (name, email, password, category, phone, location) VALUES (?, ?, ?, ?, ?, ?)').run(name, email, hashedPassword, category, phone || null, location || null);
 
     req.session.success = 'Vendor account created successfully! Please login.';
     return res.redirect('/login');

@@ -1,65 +1,46 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link">Home</a>
-    <a href="/user/vendors" class="nav-link">Vendors</a>
-    <a href="/user/cart" class="nav-link">Cart</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <% if (locals.success) { %>
-    <div class="alert alert-success"><%= success %></div>
-  <% } %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <div class="page-header"><h1><%= vendor.name %></h1><p>Products from <%= vendor.name %> (<%= vendor.category %>)</p></div>
 
-  <div class="page-header">
-    <h1><%= vendor.name %></h1>
-    <p>Products from <%= vendor.name %> (<%= vendor.category %>)</p>
-  </div>
-
-  <% if (products && products.length > 0) { %>
-  <div class="products-grid">
-    <% products.forEach(p => { %>
-    <div class="product-card">
-      <div class="product-image">
-        <img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.parentElement.innerHTML='📦'">
+      <% if (products && products.length > 0) { %>
+      <div class="products-grid">
+        <% products.forEach(p => { %>
+        <div class="product-card">
+          <div class="product-image"><img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.parentElement.innerHTML='📦'"></div>
+          <div class="product-info">
+            <div class="product-name"><%= p.name %></div>
+            <div class="product-price">₹<%= p.price.toFixed(2) %></div>
+            <form action="/user/cart/add" method="POST">
+              <input type="hidden" name="product_id" value="<%= p.id %>">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
+            </form>
+          </div>
+        </div>
+        <% }) %>
       </div>
-      <div class="product-info">
-        <div class="product-name"><%= p.name %></div>
-        <div class="product-price">₹<%= p.price.toFixed(2) %></div>
-        <form action="/user/cart/add" method="POST">
-          <input type="hidden" name="product_id" value="<%= p.id %>">
-          <input type="hidden" name="quantity" value="1">
-          <button type="submit" class="btn btn-success btn-block">Add to Cart</button>
-        </form>
+      <% } else { %>
+      <div class="card card-body text-center"><p style="color:var(--text-tri)">No products available from this vendor.</p></div>
+      <% } %>
+
+      <div class="card mt-3">
+        <div class="card-header"><h2>Request an Item</h2></div>
+        <div class="card-body">
+          <form action="/user/request-item" method="POST" data-validate>
+            <input type="hidden" name="vendor_id" value="<%= vendor.id %>">
+            <div class="form-group"><label for="product_name">Product Name *</label><input type="text" name="product_name" id="product_name" class="form-control" placeholder="What item do you need?" required data-label="Product Name"></div>
+            <div class="form-group"><label for="request_details">Details</label><input type="text" name="request_details" id="request_details" class="form-control" placeholder="Additional details (optional)"></div>
+            <button type="submit" class="btn btn-primary">Send Request</button>
+          </form>
+        </div>
       </div>
     </div>
-    <% }) %>
-  </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);">No products available from this vendor.</p>
-  </div>
-  <% } %>
-
-  <!-- Request Item -->
-  <div class="card mt-3">
-    <div class="card-header"><h2>Request an Item</h2></div>
-    <div class="card-body">
-      <form action="/user/request-item" method="POST" data-validate>
-        <input type="hidden" name="vendor_id" value="<%= vendor.id %>">
-        <div class="form-group">
-          <label for="product_name">Product Name *</label>
-          <input type="text" name="product_name" id="product_name" class="form-control" placeholder="What item do you need?" required data-label="Product Name">
-        </div>
-        <div class="form-group">
-          <label for="request_details">Details</label>
-          <input type="text" name="request_details" id="request_details" class="form-control" placeholder="Additional details (optional)">
-        </div>
-        <button type="submit" class="btn btn-primary">Send Request</button>
-      </form>
-    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

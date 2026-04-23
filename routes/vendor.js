@@ -25,37 +25,60 @@ const upload = multer({ storage });
 // Apply vendor middleware to all routes
 router.use(isVendor);
 
-// Vendor Main Page
+// Vendor Dashboard with real stats
 router.get('/', (req, res) => {
-  res.render('vendor/main', { title: 'Vendor Dashboard' });
+  const vendorId = req.session.user.id;
+  const products = db.prepare('SELECT * FROM products WHERE vendor_id = ? ORDER BY id DESC LIMIT 5').all(vendorId);
+  const productCount = db.prepare('SELECT COUNT(*) as c FROM products WHERE vendor_id = ?').get(vendorId).c;
+
+  const orderStats = db.prepare(`
+    SELECT COUNT(DISTINCT o.id) as totalOrders, COALESCE(SUM(oi.quantity * oi.price),0) as totalEarnings
+    FROM orders o JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id
+    WHERE p.vendor_id = ?
+  `).get(vendorId);
+
+  const completedOrders = db.prepare(`
+    SELECT COUNT(DISTINCT o.id) as c FROM orders o JOIN order_items oi ON o.id = oi.order_id
+    JOIN products p ON oi.product_id = p.id WHERE p.vendor_id = ? AND o.status = 'Out For Delivery'
+  `).get(vendorId).c;
+
+  const recentTransactions = db.prepare(`
+    SELECT o.*, oi.quantity, oi.price as item_price, p.name as product_name, u.name as user_name
+    FROM orders o JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id
+    JOIN users u ON o.user_id = u.id WHERE p.vendor_id = ? ORDER BY o.created_at DESC LIMIT 5
+  `).all(vendorId);
+
+  res.render('vendor/main', {
+    title: 'Vendor Dashboard', activePage: 'dashboard',
+    productCount, products,
+    totalOrders: orderStats.totalOrders || 0,
+    totalEarnings: orderStats.totalEarnings || 0,
+    completedOrders, recentTransactions
+  });
 });
 
 // Your Items / View Products
 router.get('/items', (req, res) => {
   const products = db.prepare('SELECT * FROM products WHERE vendor_id = ?').all(req.session.user.id);
-  res.render('vendor/view-product', { title: 'Your Items', products });
+  res.render('vendor/view-product', { title: 'Your Items', products, activePage: 'items' });
 });
 
 // Add New Item Page
 router.get('/add-item', (req, res) => {
   const products = db.prepare('SELECT * FROM products WHERE vendor_id = ?').all(req.session.user.id);
-  res.render('vendor/add-item', { title: 'Add New Item', products });
+  res.render('vendor/add-item', { title: 'Add New Item', products, activePage: 'add-item' });
 });
 
 // Add New Item POST
 router.post('/add-item', upload.single('image'), (req, res) => {
   const { name, price } = req.body;
   const vendor_id = req.session.user.id;
-
   if (!name || !price) {
     req.session.error = 'Product name and price are required.';
     return res.redirect('/vendor/add-item');
   }
-
   const image = req.file ? req.file.filename : 'default.png';
-
   db.prepare('INSERT INTO products (vendor_id, name, price, image) VALUES (?, ?, ?, ?)').run(vendor_id, name, parseFloat(price), image);
-
   req.session.success = 'Product added successfully!';
   return res.redirect('/vendor/add-item');
 });
@@ -64,13 +87,11 @@ router.post('/add-item', upload.single('image'), (req, res) => {
 router.post('/delete-item/:id', (req, res) => {
   const { id } = req.params;
   const vendor_id = req.session.user.id;
-
   const product = db.prepare('SELECT * FROM products WHERE id = ? AND vendor_id = ?').get(id, vendor_id);
   if (product && product.image && product.image !== 'default.png') {
     const imagePath = path.join(uploadsDir, product.image);
     if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
   }
-
   db.prepare('DELETE FROM products WHERE id = ? AND vendor_id = ?').run(id, vendor_id);
   req.session.success = 'Product deleted successfully!';
   return res.redirect('/vendor/add-item');
@@ -79,11 +100,8 @@ router.post('/delete-item/:id', (req, res) => {
 // Update Item Page
 router.get('/update-item/:id', (req, res) => {
   const product = db.prepare('SELECT * FROM products WHERE id = ? AND vendor_id = ?').get(req.params.id, req.session.user.id);
-  if (!product) {
-    req.session.error = 'Product not found.';
-    return res.redirect('/vendor/add-item');
-  }
-  res.render('vendor/update-item', { title: 'Update Product', product });
+  if (!product) { req.session.error = 'Product not found.'; return res.redirect('/vendor/add-item'); }
+  res.render('vendor/update-item', { title: 'Update Product', product, activePage: 'add-item' });
 });
 
 // Update Item POST
@@ -91,18 +109,9 @@ router.post('/update-item/:id', upload.single('image'), (req, res) => {
   const { id } = req.params;
   const { name, price } = req.body;
   const vendor_id = req.session.user.id;
-
-  if (!name || !price) {
-    req.session.error = 'Product name and price are required.';
-    return res.redirect(`/vendor/update-item/${id}`);
-  }
-
+  if (!name || !price) { req.session.error = 'Product name and price are required.'; return res.redirect(`/vendor/update-item/${id}`); }
   const existing = db.prepare('SELECT * FROM products WHERE id = ? AND vendor_id = ?').get(id, vendor_id);
-  if (!existing) {
-    req.session.error = 'Product not found.';
-    return res.redirect('/vendor/add-item');
-  }
-
+  if (!existing) { req.session.error = 'Product not found.'; return res.redirect('/vendor/add-item'); }
   let image = existing.image;
   if (req.file) {
     if (existing.image && existing.image !== 'default.png') {
@@ -111,70 +120,50 @@ router.post('/update-item/:id', upload.single('image'), (req, res) => {
     }
     image = req.file.filename;
   }
-
   db.prepare('UPDATE products SET name = ?, price = ?, image = ? WHERE id = ? AND vendor_id = ?').run(name, parseFloat(price), image, id, vendor_id);
-
   req.session.success = 'Product updated successfully!';
   return res.redirect('/vendor/add-item');
 });
 
-// Product Status (orders containing this vendor's products)
+// Product Status
 router.get('/product-status', (req, res) => {
   const vendor_id = req.session.user.id;
   const orders = db.prepare(`
     SELECT DISTINCT o.id, o.name, o.email, o.address, o.status, o.created_at
-    FROM orders o
-    JOIN order_items oi ON o.id = oi.order_id
-    JOIN products p ON oi.product_id = p.id
-    WHERE p.vendor_id = ?
-    ORDER BY o.created_at DESC
+    FROM orders o JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id
+    WHERE p.vendor_id = ? ORDER BY o.created_at DESC
   `).all(vendor_id);
-
-  res.render('vendor/product-status', { title: 'Product Status', orders });
+  const products = db.prepare('SELECT * FROM products WHERE vendor_id = ?').all(vendor_id);
+  res.render('vendor/product-status', { title: 'Product Status', orders, products, activePage: 'product-status' });
 });
 
 // Update Order Status Page
 router.get('/update-order/:id', (req, res) => {
   const order = db.prepare(`
-    SELECT DISTINCT o.*
-    FROM orders o
-    JOIN order_items oi ON o.id = oi.order_id
-    JOIN products p ON oi.product_id = p.id
-    WHERE o.id = ? AND p.vendor_id = ?
+    SELECT DISTINCT o.* FROM orders o JOIN order_items oi ON o.id = oi.order_id
+    JOIN products p ON oi.product_id = p.id WHERE o.id = ? AND p.vendor_id = ?
   `).get(req.params.id, req.session.user.id);
-
-  if (!order) {
-    req.session.error = 'Order not found.';
-    return res.redirect('/vendor/product-status');
-  }
-  res.render('vendor/update-order', { title: 'Update Order Status', order });
+  if (!order) { req.session.error = 'Order not found.'; return res.redirect('/vendor/product-status'); }
+  res.render('vendor/update-order', { title: 'Update Order Status', order, activePage: 'product-status' });
 });
 
 // Update Order Status POST
 router.post('/update-order/:id', (req, res) => {
   const { status } = req.body;
-  if (!status) {
-    req.session.error = 'Please select a status.';
-    return res.redirect(`/vendor/update-order/${req.params.id}`);
-  }
-
+  if (!status) { req.session.error = 'Please select a status.'; return res.redirect(`/vendor/update-order/${req.params.id}`); }
   db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, req.params.id);
   req.session.success = 'Order status updated successfully!';
   return res.redirect('/vendor/product-status');
 });
 
-// Request Items (user requests)
+// Request Items
 router.get('/request-items', (req, res) => {
   const vendor_id = req.session.user.id;
   const requests = db.prepare(`
-    SELECT ur.*, u.name as user_name
-    FROM user_requests ur
-    JOIN users u ON ur.user_id = u.id
-    WHERE ur.vendor_id = ?
-    ORDER BY ur.created_at DESC
+    SELECT ur.*, u.name as user_name FROM user_requests ur JOIN users u ON ur.user_id = u.id
+    WHERE ur.vendor_id = ? ORDER BY ur.created_at DESC
   `).all(vendor_id);
-
-  res.render('vendor/request-item', { title: 'Request Items', requests });
+  res.render('vendor/request-item', { title: 'Request Items', requests, activePage: 'requests' });
 });
 
 // Transactions
@@ -182,15 +171,10 @@ router.get('/transactions', (req, res) => {
   const vendor_id = req.session.user.id;
   const transactions = db.prepare(`
     SELECT o.*, oi.quantity, oi.price as item_price, p.name as product_name, u.name as user_name
-    FROM orders o
-    JOIN order_items oi ON o.id = oi.order_id
-    JOIN products p ON oi.product_id = p.id
-    JOIN users u ON o.user_id = u.id
-    WHERE p.vendor_id = ?
-    ORDER BY o.created_at DESC
+    FROM orders o JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id
+    JOIN users u ON o.user_id = u.id WHERE p.vendor_id = ? ORDER BY o.created_at DESC
   `).all(vendor_id);
-
-  res.render('vendor/transactions', { title: 'Transactions', transactions });
+  res.render('vendor/transactions', { title: 'Transactions', transactions, activePage: 'transactions' });
 });
 
 module.exports = router;

@@ -1,59 +1,31 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link">Home</a>
-    <a href="/user/vendors" class="nav-link">Continue Shopping</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="success-overlay">
-    <div class="success-header">
-      <h2>THANK YOU</h2>
-      <p>Your order has been placed successfully!</p>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content" style="display:flex;justify-content:center;align-items:flex-start;padding-top:48px">
+      <div class="success-overlay">
+        <div class="success-header">
+          <span class="material-icons-outlined" style="font-size:40px;margin-bottom:8px">check_circle</span>
+          <h2>Order Placed Successfully!</h2>
+          <p>Thank you for your order<%= typeof orderId !== 'undefined' ? ' #' + orderId : '' %></p>
+        </div>
+        <div class="success-body">
+          <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value"><%= orderDetails.name %></span></div>
+          <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value"><%= orderDetails.email %></span></div>
+          <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value"><%= orderDetails.number %></span></div>
+          <div class="detail-row"><span class="detail-label">Address</span><span class="detail-value"><%= orderDetails.address %>, <%= orderDetails.city %>, <%= orderDetails.state %></span></div>
+          <div class="detail-row"><span class="detail-label">Payment</span><span class="detail-value"><%= orderDetails.payment_method %></span></div>
+          <div class="detail-row"><span class="detail-label">Pin Code</span><span class="detail-value"><%= orderDetails.pincode %></span></div>
+          <div class="detail-row" style="border-bottom:none"><span class="detail-label">Total Amount</span><span class="detail-value" style="color:var(--primary);font-size:18px">₹<%= totalAmount.toFixed(2) %></span></div>
+          <div style="margin-top:20px;display:flex;gap:8px">
+            <a href="/user/order-status" class="btn btn-outline" style="flex:1"><span class="material-icons-outlined" style="font-size:16px">receipt_long</span> Track Order</a>
+            <a href="/user/vendors" class="btn btn-primary" style="flex:1"><span class="material-icons-outlined" style="font-size:16px">shopping_bag</span> Continue Shopping</a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="success-body">
-      <div style="background:var(--primary);color:#fff;padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;text-align:center;">
-        <span style="font-size:0.85rem;opacity:0.85;">Total Amount</span>
-        <div style="font-size:1.75rem;font-weight:700;">₹<%= totalAmount.toFixed(2) %></div>
-      </div>
-
-      <div class="detail-row">
-        <span class="detail-label">Name</span>
-        <span class="detail-value"><%= orderDetails.name %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Number</span>
-        <span class="detail-value"><%= orderDetails.number %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">E-mail</span>
-        <span class="detail-value"><%= orderDetails.email %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Payment Method</span>
-        <span class="detail-value"><%= orderDetails.payment_method %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Address</span>
-        <span class="detail-value"><%= orderDetails.address %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">State</span>
-        <span class="detail-value"><%= orderDetails.state %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">City</span>
-        <span class="detail-value"><%= orderDetails.city %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Pin Code</span>
-        <span class="detail-value"><%= orderDetails.pincode %></span>
-      </div>
-
-      <a href="/user/vendors" class="btn btn-primary btn-block btn-lg mt-3">Continue Shopping</a>
-    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

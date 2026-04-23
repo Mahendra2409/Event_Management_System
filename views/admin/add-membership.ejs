@@ -1,76 +1,34 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Admin</div>
-  <div class="navbar-links">
-    <a href="/admin" class="nav-link">Home</a>
-    <a href="/admin/maintain-<%= type %>" class="nav-link">Back</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="auth-container">
-    <div class="card">
-      <div class="card-header">
-        <h2>Add <%= type.charAt(0).toUpperCase() + type.slice(1) %> Membership</h2>
-      </div>
-      <div class="card-body">
-        <% if (locals.error) { %>
-          <div class="alert alert-error"><%= error %></div>
-        <% } %>
-        <% if (locals.success) { %>
-          <div class="alert alert-success"><%= success %></div>
-        <% } %>
-
-        <form action="/admin/membership/add/<%= type %>" method="POST" data-validate>
-          <div class="form-group">
-            <label for="member_name">Member Name *</label>
-            <input type="text" name="member_name" id="member_name" class="form-control" placeholder="Enter full name" required data-label="Member Name">
-          </div>
-
-          <div class="form-group">
-            <label for="member_email">Member Email *</label>
-            <input type="email" name="member_email" id="member_email" class="form-control" placeholder="Enter email address" required data-label="Member Email">
-          </div>
-
-          <div class="form-group">
-            <label for="member_phone">Phone Number *</label>
-            <input type="text" name="member_phone" id="member_phone" class="form-control" placeholder="Enter phone number" required data-label="Phone Number" pattern="\d{10,15}" title="Enter 10-15 digit phone number">
-          </div>
-
-          <div class="form-group">
-            <label>Membership Duration *</label>
-            <div class="radio-group">
-              <label class="radio-option">
-                <input type="radio" name="duration" value="6 months" checked>
-                <span>6 Months</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="duration" value="1 year">
-                <span>1 Year</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="duration" value="2 years">
-                <span>2 Years</span>
-              </label>
+<div class="app-layout">
+  <%- include('../partials/sidebar-admin') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1>Add <%= type.charAt(0).toUpperCase() + type.slice(1) %> Membership</h1><p>Create a new membership</p></div>
+      <div class="card" style="max-width:500px">
+        <div class="card-header"><h2>Membership Details</h2></div>
+        <div class="card-body">
+          <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+          <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+          <form action="/admin/membership/add/<%= type %>" method="POST" data-validate>
+            <div class="form-group"><label>Member Name *</label><input type="text" name="member_name" class="form-control" placeholder="Enter full name" required data-label="Member Name"></div>
+            <div class="form-group"><label>Member Email *</label><input type="email" name="member_email" class="form-control" placeholder="Enter email address" required data-label="Member Email"></div>
+            <div class="form-group"><label>Phone Number *</label><input type="text" name="member_phone" class="form-control" placeholder="Enter phone number" required data-label="Phone Number" pattern="\d{10,15}" title="Enter 10-15 digit phone number"></div>
+            <div class="form-group"><label>Membership Duration *</label>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="duration" value="6 months" checked><span>6 Months</span></label>
+                <label class="radio-option"><input type="radio" name="duration" value="1 year"><span>1 Year</span></label>
+                <label class="radio-option"><input type="radio" name="duration" value="2 years"><span>2 Years</span></label>
+              </div>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="start_date">Start Date *</label>
-            <input type="date" name="start_date" id="start_date" class="form-control" required data-label="Start Date">
-          </div>
-
-          <div class="btn-row">
-            <a href="/admin/maintain-<%= type %>" class="btn btn-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Add Membership</button>
-          </div>
-        </form>
+            <div class="form-group"><label>Start Date *</label><input type="date" name="start_date" id="start_date" class="form-control" required data-label="Start Date"></div>
+            <div class="btn-row"><a href="/admin/maintain-<%= type %>" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary">Add Membership</button></div>
+          </form>
+        </div>
       </div>
     </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
-<script>
-  // Default start_date to today
-  document.getElementById('start_date').valueAsDate = new Date();
-</script>
+<script>document.getElementById('start_date').valueAsDate = new Date();</script>
 <%- include('../partials/footer') %>

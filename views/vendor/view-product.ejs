@@ -1,42 +1,32 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Vendor</div>
-  <div class="navbar-links">
-    <a href="/vendor" class="nav-link">Home</a>
-    <a href="/vendor/add-item" class="nav-link">Add Item</a>
-    <a href="/vendor/product-status" class="nav-link">Product Status</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="page-header">
-    <h1>Your Products</h1>
-    <p>View all your listed products</p>
-  </div>
-  <% if (products && products.length > 0) { %>
-  <div class="products-grid">
-    <% products.forEach(p => { %>
-    <div class="product-card">
-      <div class="product-image">
-        <img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.parentElement.innerHTML='📦'">
-      </div>
-      <div class="product-info">
-        <div class="product-name"><%= p.name %></div>
-        <div class="product-price">₹<%= p.price.toFixed(2) %></div>
-        <div style="display:flex;gap:0.4rem;">
-          <a href="/vendor/update-item/<%= p.id %>" class="btn btn-sm btn-warning" style="flex:1;">Update</a>
-          <form action="/vendor/delete-item/<%= p.id %>" method="POST" style="flex:1;">
-            <button type="submit" class="btn btn-sm btn-danger btn-block" onclick="return confirm('Delete?')">Delete</button>
-          </form>
+<div class="app-layout">
+  <%- include('../partials/sidebar-vendor') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <div class="page-header"><h1>Your Items</h1><p>View and manage your products</p></div>
+      <% if (products && products.length > 0) { %>
+      <div class="products-grid">
+        <% products.forEach(p => { %>
+        <div class="product-card">
+          <div class="product-image"><img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.parentElement.innerHTML='📦'"></div>
+          <div class="product-info">
+            <div class="product-name"><%= p.name %></div>
+            <div class="product-price">₹<%= p.price.toFixed(2) %></div>
+            <div style="display:flex;gap:6px">
+              <a href="/vendor/update-item/<%= p.id %>" class="btn btn-sm btn-outline" style="flex:1">Edit</a>
+              <form action="/vendor/delete-item/<%= p.id %>" method="POST" style="flex:1"><button type="submit" class="btn btn-sm btn-danger btn-block" onclick="return confirm('Delete?')">Delete</button></form>
+            </div>
+          </div>
         </div>
+        <% }) %>
       </div>
+      <% } else { %>
+      <div class="card card-body text-center"><p style="color:var(--text-tri)">No products yet. <a href="/vendor/add-item" style="color:var(--primary)">Add your first product</a>.</p></div>
+      <% } %>
     </div>
-    <% }) %>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);">No products yet. <a href="/vendor/add-item" style="color:var(--primary);">Add one</a></p>
-  </div>
-  <% } %>
 </div>
 <%- include('../partials/footer') %>

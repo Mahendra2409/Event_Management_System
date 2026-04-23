@@ -1,57 +1,41 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Vendor</div>
-  <div class="navbar-links">
-    <a href="/vendor" class="nav-link">Home</a>
-    <a href="/vendor/product-status" class="nav-link active">Product Status</a>
-    <a href="/vendor/transactions" class="nav-link">Transactions</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
+<div class="app-layout">
+  <%- include('../partials/sidebar-vendor') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <div class="page-header"><h1>Product Status</h1><p>Manage and update the status of your products</p></div>
+
+      <div class="stat-cards">
+        <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">inventory_2</span></div><div><div class="stat-num"><%= products.length %></div><div class="stat-label">Total Products</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">check_circle</span></div><div><div class="stat-num"><%= products.length %></div><div class="stat-label">Active</div></div></div>
+      </div>
+
+      <% if (orders && orders.length > 0) { %>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Address</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><strong>#<%= o.id %></strong></td>
+              <td><%= o.name %></td>
+              <td><%= o.email %></td>
+              <td><%= o.address %></td>
+              <td><span class="status-badge <%= o.status === 'Out For Delivery' ? 'status-delivered' : o.status === 'Ready for Shipping' ? 'status-shipped' : 'status-pending' %>"><%= o.status %></span></td>
+              <td><%= new Date(o.created_at).toLocaleDateString() %></td>
+              <td><a href="/vendor/update-order/<%= o.id %>" class="btn btn-sm btn-primary">Update</a></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="card card-body text-center"><p style="color:var(--text-tri)">No orders to display.</p></div>
+      <% } %>
+    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-</nav>
-<div class="main-container">
-  <div class="page-header">
-    <h1>Product Status</h1>
-    <p>Track orders containing your products</p>
-  </div>
-  <% if (orders && orders.length > 0) { %>
-  <div class="table-container card">
-    <table>
-      <thead>
-        <tr>
-          <th>Order #</th>
-          <th>Customer</th>
-          <th>Email</th>
-          <th>Address</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% orders.forEach(order => { %>
-        <tr>
-          <td>#<%= order.id %></td>
-          <td><%= order.name %></td>
-          <td><%= order.email %></td>
-          <td><%= order.address %></td>
-          <td>
-            <span class="status-badge <%= order.status === 'Received' ? 'status-received' : order.status === 'Ready for Shipping' ? 'status-shipping' : order.status === 'Out For Delivery' ? 'status-delivery' : 'status-cancelled' %>">
-              <%= order.status %>
-            </span>
-          </td>
-          <td><%= new Date(order.created_at).toLocaleDateString() %></td>
-          <td>
-            <a href="/vendor/update-order/<%= order.id %>" class="btn btn-sm btn-primary">Update</a>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);">No orders yet.</p>
-  </div>
-  <% } %>
 </div>
 <%- include('../partials/footer') %>

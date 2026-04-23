@@ -1,17 +1,37 @@
 <%- include('partials/header') %>
-  <div class="main-container">
-    <div class="hero">
-      <h1>Event <span>Management</span> System</h1>
-      <p>Your one-stop platform for managing events, vendors, guests, and orders seamlessly.</p>
-      <div class="hero-buttons">
-        <a href="/login" class="btn btn-primary btn-lg">Login</a>
-        <a href="/signup/user" class="btn btn-outline btn-lg">Sign Up</a>
-      </div>
-      <div style="margin-top:1.5rem;display:flex;gap:0.65rem;justify-content:center;flex-wrap:wrap;">
-        <a href="/signup/admin" class="btn btn-sm btn-secondary">Admin Signup</a>
-        <a href="/signup/user" class="btn btn-sm btn-secondary">User Signup</a>
-        <a href="/signup/vendor" class="btn btn-sm btn-secondary">Vendor Signup</a>
-      </div>
-    </div>
+<nav class="navbar">
+  <a href="/" class="navbar-brand"><span class="material-icons-outlined" style="font-size:24px;color:var(--primary)">event</span> <span>EMS</span> Event Management</a>
+  <div class="navbar-links">
+    <a href="/login" class="nav-link">Login</a>
+    <a href="/signup/user" class="nav-link">Sign Up</a>
   </div>
-  <%- include('partials/footer') %>
+</nav>
+<div class="hero">
+  <h1>Welcome to <span>Event Management System</span></h1>
+  <p>Manage your events seamlessly. Browse vendors, manage orders, track deliveries, and create unforgettable experiences.</p>
+  <div class="hero-buttons">
+    <a href="/login" class="btn btn-primary btn-lg"><span class="material-icons-outlined" style="font-size:18px">login</span> Login</a>
+    <a href="/signup/user" class="btn btn-outline btn-lg"><span class="material-icons-outlined" style="font-size:18px">person_add</span> Sign Up</a>
+  </div>
+</div>
+<div class="main-container">
+  <div class="dashboard-grid" style="max-width:800px;margin:0 auto">
+    <a href="/login/user" class="dash-card">
+      <div class="dash-card-icon"><span class="material-icons-outlined">person</span></div>
+      <div><h3>User Portal</h3><p>Browse vendors, manage cart, track orders.</p></div>
+      <span class="material-icons-outlined arrow">arrow_forward</span>
+    </a>
+    <a href="/login/vendor" class="dash-card">
+      <div class="dash-card-icon"><span class="material-icons-outlined">storefront</span></div>
+      <div><h3>Vendor Portal</h3><p>Manage products, receive orders, track sales.</p></div>
+      <span class="material-icons-outlined arrow">arrow_forward</span>
+    </a>
+    <a href="/login/admin" class="dash-card">
+      <div class="dash-card-icon"><span class="material-icons-outlined">admin_panel_settings</span></div>
+      <div><h3>Admin Portal</h3><p>Manage users, vendors, and memberships.</p></div>
+      <span class="material-icons-outlined arrow">arrow_forward</span>
+    </a>
+  </div>
+</div>
+<div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,39 @@
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <div class="page-header"><h1>My Item Requests</h1><p>View all the items you've requested from vendors</p></div>
+
+      <% if (requests && requests.length > 0) { %>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>#</th><th>Product Requested</th><th>Vendor</th><th>Details</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+          <% requests.forEach((r, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><strong><%= r.product_name %></strong></td>
+              <td><%= r.vendor_name %></td>
+              <td><%= r.request_details || '-' %></td>
+              <td><span class="status-badge <%= r.status === 'Fulfilled' ? 'status-delivered' : 'status-pending' %>"><%= r.status %></span></td>
+              <td><%= new Date(r.created_at).toLocaleDateString() %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="card card-body text-center" style="padding:48px">
+        <span class="material-icons-outlined" style="font-size:48px;color:var(--text-tri)">description</span>
+        <h3 style="margin:12px 0 4px">No Requests Yet</h3>
+        <p style="color:var(--text-tri)">You haven't requested any items. <a href="/user/vendors" style="color:var(--primary)">Browse vendors</a> to request items.</p>
+      </div>
+      <% } %>
+    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

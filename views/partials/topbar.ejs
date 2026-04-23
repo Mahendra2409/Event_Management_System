@@ -3,7 +3,11 @@
     <button class="topbar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
       <span class="material-icons-outlined">menu</span>
     </button>
-    <span class="topbar-title"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Dashboard' %></span>
+    <a href="/" class="topbar-brand">
+      <span class="material-icons-outlined">event</span>
+      <strong>EMS</strong>
+      <span class="topbar-brand-text">Event Management System</span>
+    </a>
   </div>
   <div class="topbar-right">
     <button class="topbar-icon-btn" aria-label="Notifications">

@@ -1,48 +1,77 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Vendor</div>
-  <div class="navbar-links">
-    <a href="/vendor" class="nav-link active">Home</a>
-    <a href="/vendor/items" class="nav-link">Your Items</a>
-    <a href="/vendor/add-item" class="nav-link">Add New Item</a>
-    <a href="/vendor/transactions" class="nav-link">Transactions</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <% if (locals.success) { %>
-    <div class="alert alert-success"><%= success %></div>
-  <% } %>
-  <div class="dashboard-header">
-    <h1>Welcome, <%= user.name %></h1>
-    <p>Vendor Dashboard</p>
-  </div>
-  <div class="dashboard-grid">
-    <a href="/vendor/items" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">inventory_2</span></div>
-      <h3>Your Items</h3>
-      <p>View and manage your products</p>
-    </a>
-    <a href="/vendor/add-item" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">add_circle_outline</span></div>
-      <h3>Add New Item</h3>
-      <p>Add a new product to your catalog</p>
-    </a>
-    <a href="/vendor/transactions" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">receipt_long</span></div>
-      <h3>Transactions</h3>
-      <p>View user requests and orders</p>
-    </a>
-    <a href="/vendor/product-status" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">analytics</span></div>
-      <h3>Product Status</h3>
-      <p>Track order statuses</p>
-    </a>
-    <a href="/vendor/request-items" class="dashboard-card">
-      <div class="icon"><span class="material-icons-outlined">mark_email_unread</span></div>
-      <h3>Request Items</h3>
-      <p>View item requests from users</p>
-    </a>
+<div class="app-layout">
+  <%- include('../partials/sidebar-vendor') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <div class="page-header"><h1>Dashboard</h1><p>Manage your products, track orders and grow your business.</p></div>
+
+      <div class="stat-cards">
+        <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">inventory_2</span></div><div><div class="stat-num"><%= productCount %></div><div class="stat-label">Total Products</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon blue"><span class="material-icons-outlined">shopping_cart</span></div><div><div class="stat-num"><%= totalOrders %></div><div class="stat-label">Total Orders</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">check_circle</span></div><div><div class="stat-num"><%= completedOrders %></div><div class="stat-label">Completed Orders</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon orange"><span class="material-icons-outlined">payments</span></div><div><div class="stat-num">₹<%= (totalEarnings || 0).toFixed(2) %></div><div class="stat-label">Total Earnings</div></div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+        <div class="section-card">
+          <h3>Recent Products <a href="/vendor/items">View All</a></h3>
+          <% if (products && products.length > 0) { %>
+          <div class="table-container" style="border:none">
+            <table>
+              <thead><tr><th>Image</th><th>Product Name</th><th>Price</th><th>Action</th></tr></thead>
+              <tbody>
+              <% products.forEach(p => { %>
+                <tr>
+                  <td><div style="width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--muted)"><img src="/uploads/<%= p.image %>" style="width:100%;height:100%;object-fit:cover" onerror="this.src=''"></div></td>
+                  <td><strong><%= p.name %></strong></td>
+                  <td>₹<%= p.price.toFixed(2) %></td>
+                  <td><a href="/vendor/update-item/<%= p.id %>" class="btn btn-sm btn-outline">Edit</a></td>
+                </tr>
+              <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %><p style="color:var(--text-tri);font-size:13px">No products yet. <a href="/vendor/add-item" style="color:var(--primary)">Add your first product</a>.</p><% } %>
+        </div>
+        <div>
+          <div class="section-card">
+            <h3>Quick Actions</h3>
+            <div class="quick-actions">
+              <a href="/vendor/add-item" class="quick-action"><span class="material-icons-outlined">add_box</span><span>Add New Item</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+              <a href="/vendor/transactions" class="quick-action"><span class="material-icons-outlined">swap_horiz</span><span>View Transactions</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+              <a href="/vendor/product-status" class="quick-action"><span class="material-icons-outlined">local_offer</span><span>Update Product Status</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+              <a href="/vendor/request-items" class="quick-action"><span class="material-icons-outlined">description</span><span>Manage Requests</span><span class="material-icons-outlined arrow">chevron_right</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% if (recentTransactions && recentTransactions.length > 0) { %>
+      <div class="section-card mt-3">
+        <h3>Recent Transactions <a href="/vendor/transactions">View All</a></h3>
+        <div class="table-container" style="border:none">
+          <table>
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Item</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>
+            <% recentTransactions.forEach(t => { %>
+              <tr>
+                <td>#<%= t.id %></td>
+                <td><%= t.user_name %></td>
+                <td><%= t.product_name %></td>
+                <td>₹<%= (t.item_price * t.quantity).toFixed(2) %></td>
+                <td><span class="status-badge <%= t.status === 'Out For Delivery' ? 'status-delivered' : t.status === 'Ready for Shipping' ? 'status-shipped' : 'status-pending' %>"><%= t.status %></span></td>
+                <td><%= new Date(t.created_at).toLocaleDateString() %></td>
+              </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

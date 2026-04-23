@@ -13,11 +13,17 @@ const isAdmin = (req, res, next) => {
 router.use(isAdmin);
 
 // =========== DASHBOARD ===========
-router.get('/', (req, res) => res.render('admin/dashboard'));
+router.get('/', (req, res) => {
+  const userCount = db.prepare("SELECT COUNT(*) as c FROM users WHERE role = 'user'").get().c;
+  const vendorCount = db.prepare('SELECT COUNT(*) as c FROM vendors').get().c;
+  const membershipCount = db.prepare('SELECT COUNT(*) as c FROM memberships').get().c;
+  const orderCount = db.prepare('SELECT COUNT(*) as c FROM orders').get().c;
+  res.render('admin/dashboard', { activePage: 'dashboard', userCount, vendorCount, membershipCount, orderCount });
+});
 
 // =========== MAINTAIN USER / VENDOR ===========
-router.get('/maintain-user', (req, res) => res.render('admin/maintain-user'));
-router.get('/maintain-vendor', (req, res) => res.render('admin/maintain-vendor'));
+router.get('/maintain-user', (req, res) => res.render('admin/maintain-user', { activePage: 'maintain-user' }));
+router.get('/maintain-vendor', (req, res) => res.render('admin/maintain-vendor', { activePage: 'maintain-vendor' }));
 
 // =========== ADD MEMBERSHIP ===========
 router.get('/membership/add/:type', (req, res) => {

@@ -1,78 +1,52 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link">Home</a>
-    <a href="/user/cart" class="nav-link">Cart</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="auth-container" style="max-width:600px;">
-    <div class="card">
-      <div class="card-header">
-        <h2>Checkout</h2>
-        <p class="auth-subtitle">Total: ₹<%= totalAmount.toFixed(2) %></p>
-      </div>
-      <div class="card-body">
-        <% if (locals.error) { %>
-          <div class="alert alert-error"><%= error %></div>
-        <% } %>
-
-        <div style="background:var(--bg-muted);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
-          <h4 style="margin-bottom:0.5rem;">Items</h4>
-          <% cartItems.forEach(item => { %>
-            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;font-size:0.9rem;">
-              <span><%= item.name %> × <%= item.quantity %></span>
-              <strong>₹<%= (item.price * item.quantity).toFixed(2) %></strong>
-            </div>
-          <% }) %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="checkout-overlay">
+      <div class="checkout-card">
+        <div class="checkout-header">
+          <div class="checkout-icon"><span class="material-icons-outlined">shopping_bag</span></div>
+          <div><h2>Checkout</h2><p>Please fill in your details to complete the order</p></div>
+          <a href="/user/cart" class="close-btn"><span class="material-icons-outlined">close</span></a>
         </div>
+        <div class="checkout-body">
+          <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+          <form action="/user/checkout" method="POST" data-validate>
+            <div class="grid-2">
+              <div class="form-group"><label>Full Name *</label><div class="input-icon-wrap"><span class="material-icons-outlined">person</span><input type="text" name="name" class="form-control" placeholder="John Doe" required data-label="Full Name"></div></div>
+              <div class="form-group"><label>Phone Number *</label><div class="input-icon-wrap"><span class="material-icons-outlined">phone</span><input type="text" name="number" class="form-control" placeholder="9876543210" required data-label="Phone Number"></div></div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Email Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" placeholder="john@example.com" required data-label="Email"></div></div>
+              <div class="form-group"><label>Payment Method *</label><div class="input-icon-wrap"><span class="material-icons-outlined">credit_card</span><select name="payment_method" class="form-control" required data-label="Payment Method" style="padding-left:36px"><option value="">Select Method</option><option value="Credit / Debit Card">Credit / Debit Card</option><option value="UPI">UPI</option><option value="Net Banking">Net Banking</option><option value="Cash on Delivery">Cash on Delivery</option></select></div></div>
+            </div>
+            <div class="form-group"><label>Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">location_on</span><input type="text" name="address" class="form-control" placeholder="123, Main Street" required data-label="Address"></div></div>
+            <div class="grid-2">
+              <div class="form-group"><label>State *</label><input type="text" name="state" class="form-control" placeholder="State" required data-label="State"></div>
+              <div class="form-group"><label>City *</label><input type="text" name="city" class="form-control" placeholder="City" required data-label="City"></div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>ZIP / Pin Code *</label><input type="text" name="pincode" class="form-control" placeholder="10001" required data-label="Pin Code"></div>
+              <div class="form-group"><label>Country</label><input type="text" class="form-control" value="India" disabled></div>
+            </div>
 
-        <form action="/user/checkout" method="POST" data-validate>
-          <h4 style="margin-bottom:1rem;">Details</h4>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-            <div class="form-group">
-              <label for="name">Name *</label>
-              <input type="text" name="name" id="name" class="form-control" placeholder="Full name" required data-label="Name" value="<%= user.name %>">
+            <div class="checkout-summary">
+              <span class="material-icons-outlined">receipt</span>
+              <div><strong>Order Summary</strong><br><small><%= cartItems.length %> Items</small></div>
+              <div class="summary-amount">₹<%= totalAmount.toFixed(2) %></div>
             </div>
-            <div class="form-group">
-              <label for="number">Number *</label>
-              <input type="tel" name="number" id="number" class="form-control" placeholder="Phone number" required data-label="Number">
+
+            <div class="checkout-actions">
+              <a href="/user/cart" class="btn btn-outline"><span class="material-icons-outlined" style="font-size:16px">shopping_cart</span> Continue Shopping</a>
+              <button type="submit" class="btn btn-primary"><span class="material-icons-outlined" style="font-size:16px">shopping_bag</span> Place Order Securely</button>
             </div>
-            <div class="form-group">
-              <label for="email">E-mail *</label>
-              <input type="email" name="email" id="email" class="form-control" placeholder="Email" required data-label="Email" value="<%= user.email %>">
-            </div>
-            <div class="form-group">
-              <label for="payment_method">Payment Method *</label>
-              <select name="payment_method" id="payment_method" class="form-control" required data-label="Payment Method">
-                <option value="">Select</option>
-                <option value="Cash">Cash</option>
-                <option value="UPI">UPI</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column:1/-1;">
-              <label for="address">Address *</label>
-              <input type="text" name="address" id="address" class="form-control" placeholder="Street address" required data-label="Address">
-            </div>
-            <div class="form-group">
-              <label for="state">State *</label>
-              <input type="text" name="state" id="state" class="form-control" placeholder="State" required data-label="State">
-            </div>
-            <div class="form-group">
-              <label for="city">City *</label>
-              <input type="text" name="city" id="city" class="form-control" placeholder="City" required data-label="City">
-            </div>
-            <div class="form-group">
-              <label for="pincode">Pin Code *</label>
-              <input type="text" name="pincode" id="pincode" class="form-control" placeholder="Pin code" required data-label="Pin Code">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">Order Now</button>
-        </form>
+            <div class="checkout-security"><span class="material-icons-outlined" style="font-size:14px">verified_user</span> Your payment information is secure and encrypted</div>
+          </form>
+        </div>
       </div>
     </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

@@ -1,84 +1,243 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link">Home</a>
-    <a href="/user/vendors" class="nav-link">View Product</a>
-    <a href="/user/cart" class="nav-link active">Cart</a>
-    <a href="/user/order-status" class="nav-link">Product Status</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <% if (locals.success) { %>
-    <div class="alert alert-success"><%= success %></div>
-  <% } %>
-  <% if (locals.error) { %>
-    <div class="alert alert-error"><%= error %></div>
-  <% } %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
 
-  <div class="page-header">
-    <h1>Shopping Cart</h1>
-  </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div class="page-header" style="margin-bottom:0"><h1>Shopping Cart</h1><div class="breadcrumb"><a href="/user">Home</a> / Cart</div></div>
+        <a href="/user/vendors" class="btn btn-outline"><span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Continue Shopping</a>
+      </div>
 
-  <% if (cartItems && cartItems.length > 0) { %>
-  <div class="table-container card">
-    <table>
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Total Price</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% cartItems.forEach(item => { %>
-        <tr>
-          <td><img src="/uploads/<%= item.image %>" alt="<%= item.name %>" style="width:50px;height:50px;object-fit:cover;border-radius:6px;" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgZmlsbD0iI2NjYyI+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjZWVlIi8+PC9zdmc+'"></td>
-          <td><strong><%= item.name %></strong><br><small style="color:var(--text-tertiary);">by <%= item.vendor_name %></small></td>
-          <td>₹<%= item.price.toFixed(2) %></td>
-          <td>
-            <form action="/user/cart/update/<%= item.id %>" method="POST">
-              <select name="quantity" class="qty-select" style="padding:0.3rem 0.5rem;border:1px solid var(--border);border-radius:4px;">
-                <% for(let i = 1; i <= 10; i++) { %>
-                  <option value="<%= i %>" <%= item.quantity === i ? 'selected' : '' %>><%= i %></option>
-                <% } %>
-              </select>
+      <% if (cartItems && cartItems.length > 0) { %>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Item</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Total Price</th><th>Action</th></tr></thead>
+          <tbody>
+          <% cartItems.forEach(item => { %>
+            <tr>
+              <td><div style="width:64px;height:64px;border-radius:8px;overflow:hidden;background:var(--muted)"><img src="/uploads/<%= item.image %>" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.src=''"></div></td>
+              <td><strong><%= item.name %></strong><br><small style="color:var(--text-tri)"><%= item.vendor_name %></small></td>
+              <td>₹<%= item.price.toFixed(2) %></td>
+              <td>
+                <form action="/user/cart/update/<%= item.id %>" method="POST" style="display:inline">
+                  <select name="quantity" class="form-control qty-select" style="width:70px;padding:4px 8px">
+                    <% for(let i=1;i<=10;i++){%><option value="<%=i%>" <%=item.quantity===i?'selected':''%>><%=i%></option><%}%>
+                  </select>
+                </form>
+              </td>
+              <td style="font-weight:600;color:var(--primary)">₹<%= item.total_price.toFixed(2) %></td>
+              <td><form action="/user/cart/remove/<%= item.id %>" method="POST" style="display:inline"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove this item?')"><span class="material-icons-outlined" style="font-size:14px">delete</span></button></form></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cart-summary">
+        <strong style="font-size:16px">Grand Total</strong>
+        <div class="grand-total">₹<%= grandTotal.toFixed(2) %></div>
+        <div class="cart-actions">
+          <form action="/user/cart/clear" method="POST"><button type="submit" class="btn btn-outline" style="color:var(--danger);border-color:var(--danger)" onclick="return confirm('Delete all items?')"><span class="material-icons-outlined" style="font-size:14px">delete</span> Delete All</button></form>
+        </div>
+      </div>
+
+      <div class="text-center mt-3">
+        <button type="button" class="btn btn-primary btn-lg" onclick="openCheckoutModal()">
+          <span class="material-icons-outlined" style="font-size:18px">shopping_bag</span> Proceed to Checkout
+        </button>
+      </div>
+
+      <!-- CHECKOUT MODAL POPUP -->
+      <div class="modal-overlay" id="checkoutModal" style="display:none">
+        <div class="modal-backdrop" onclick="closeCheckoutModal()"></div>
+        <div class="checkout-card modal-card">
+          <div class="checkout-header">
+            <div class="checkout-icon"><span class="material-icons-outlined">shopping_bag</span></div>
+            <div><h2>Checkout</h2><p>Fill in your details to complete the order</p></div>
+            <button class="close-btn" onclick="closeCheckoutModal()"><span class="material-icons-outlined">close</span></button>
+          </div>
+          <div class="checkout-body" style="max-height:70vh;overflow-y:auto">
+            <form action="/user/checkout" method="POST" data-validate id="checkoutForm">
+              <div class="grid-2">
+                <div class="form-group"><label>Full Name *</label><div class="input-icon-wrap"><span class="material-icons-outlined">person</span><input type="text" name="name" class="form-control" placeholder="John Doe" required data-label="Full Name"></div></div>
+                <div class="form-group"><label>Phone Number *</label><div class="input-icon-wrap"><span class="material-icons-outlined">phone</span><input type="text" name="number" class="form-control" placeholder="9876543210" required data-label="Phone Number" pattern="\d{10}" title="Enter 10 digit phone number"></div></div>
+              </div>
+              <div class="form-group"><label>Email Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" placeholder="john@example.com" required data-label="Email"></div></div>
+
+              <div class="form-group"><label>Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">location_on</span><input type="text" name="address" class="form-control" placeholder="123, Main Street, Locality" required data-label="Address"></div></div>
+
+              <div class="grid-2">
+                <div class="form-group"><label>Country *</label>
+                  <select name="country" id="countrySelect" class="form-control" required data-label="Country" onchange="onCountryChange()">
+                    <option value="">Select Country</option>
+                    <option value="India" selected>🇮🇳 India</option>
+                    <option value="United States">🇺🇸 United States</option>
+                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Germany">🇩🇪 Germany</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="Singapore">🇸🇬 Singapore</option>
+                    <option value="UAE">🇦🇪 UAE</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>State *</label>
+                  <select name="state" id="stateSelect" class="form-control" required data-label="State" onchange="onStateChange()">
+                    <option value="">Select State</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group"><label>City *</label>
+                  <select name="city" id="citySelect" class="form-control" required data-label="City">
+                    <option value="">Select City</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>ZIP / Pin Code *</label><input type="text" name="pincode" id="pincodeInput" class="form-control" placeholder="110001" required data-label="Pin Code" pattern="\d{5,6}" title="Enter 5-6 digit pincode"></div>
+              </div>
+
+              <div class="form-group"><label>Payment Method *</label>
+                <div class="radio-group">
+                  <label class="radio-option"><input type="radio" name="payment_method" value="Credit / Debit Card" required><span class="material-icons-outlined" style="font-size:16px">credit_card</span><span>Card</span></label>
+                  <label class="radio-option"><input type="radio" name="payment_method" value="UPI"><span class="material-icons-outlined" style="font-size:16px">qr_code</span><span>UPI</span></label>
+                  <label class="radio-option"><input type="radio" name="payment_method" value="Net Banking"><span class="material-icons-outlined" style="font-size:16px">account_balance</span><span>Net Banking</span></label>
+                  <label class="radio-option"><input type="radio" name="payment_method" value="Cash on Delivery"><span class="material-icons-outlined" style="font-size:16px">payments</span><span>COD</span></label>
+                </div>
+              </div>
+
+              <div class="checkout-summary">
+                <span class="material-icons-outlined">receipt</span>
+                <div><strong>Order Summary</strong><br><small><%= cartItems.length %> Items</small></div>
+                <div class="summary-amount">₹<%= grandTotal.toFixed(2) %></div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">
+                <span class="material-icons-outlined" style="font-size:18px">lock</span> Place Order Securely
+              </button>
+              <div class="checkout-security mt-1"><span class="material-icons-outlined" style="font-size:14px">verified_user</span> Your payment information is secure and encrypted</div>
             </form>
-          </td>
-          <td><strong>₹<%= item.total_price.toFixed(2) %></strong></td>
-          <td>
-            <form action="/user/cart/remove/<%= item.id %>" method="POST" style="display:inline;">
-              <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-            </form>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
+          </div>
+        </div>
+      </div>
 
-  <div class="cart-summary">
-    <div>
-      <span style="font-size:0.9rem;opacity:0.8;">Grand Total</span>
-      <div class="grand-total">₹<%= grandTotal.toFixed(2) %></div>
+      <% } else { %>
+      <div class="card card-body text-center" style="padding:48px">
+        <span class="material-icons-outlined" style="font-size:48px;color:var(--text-tri)">shopping_cart</span>
+        <h3 style="margin:12px 0 4px">Your cart is empty</h3>
+        <p style="color:var(--text-tri);margin-bottom:16px">Browse vendors to add items to your cart.</p>
+        <a href="/user/vendors" class="btn btn-primary">Browse Vendors</a>
+      </div>
+      <% } %>
     </div>
-    <div class="cart-actions">
-      <form action="/user/cart/clear" method="POST" style="display:inline;">
-        <button type="submit" class="btn btn-danger" onclick="return confirm('Remove all items?')">Delete All</button>
-      </form>
-      <a href="/user/checkout" class="btn btn-success btn-lg">Proceed to CheckOut</a>
-    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);margin-bottom:1rem;">Your cart is empty.</p>
-    <a href="/user/vendors" class="btn btn-primary">Browse Vendors</a>
-  </div>
-  <% } %>
 </div>
+
+<script>
+// State/City Data
+const mapData = {
+  "India": {
+    "Andhra Pradesh": ["Visakhapatnam","Vijayawada","Guntur","Nellore","Kurnool","Tirupati"],
+    "Arunachal Pradesh": ["Itanagar","Naharlagun","Tawang"],
+    "Assam": ["Guwahati","Silchar","Dibrugarh","Jorhat","Nagaon"],
+    "Bihar": ["Patna","Gaya","Bhagalpur","Muzaffarpur","Darbhanga"],
+    "Chhattisgarh": ["Raipur","Bhilai","Bilaspur","Korba","Durg"],
+    "Delhi": ["New Delhi","North Delhi","South Delhi","East Delhi","West Delhi"],
+    "Goa": ["Panaji","Margao","Vasco da Gama","Mapusa"],
+    "Gujarat": ["Ahmedabad","Surat","Vadodara","Rajkot","Bhavnagar","Gandhinagar"],
+    "Haryana": ["Gurugram","Faridabad","Panipat","Ambala","Hisar","Karnal"],
+    "Himachal Pradesh": ["Shimla","Manali","Dharamshala","Mandi","Solan"],
+    "Jharkhand": ["Ranchi","Jamshedpur","Dhanbad","Bokaro","Hazaribagh"],
+    "Karnataka": ["Bengaluru","Mysuru","Hubli","Mangaluru","Belgaum","Shimoga"],
+    "Kerala": ["Thiruvananthapuram","Kochi","Kozhikode","Thrissur","Kollam"],
+    "Madhya Pradesh": ["Bhopal","Indore","Jabalpur","Gwalior","Ujjain"],
+    "Maharashtra": ["Mumbai","Pune","Nagpur","Nashik","Thane","Aurangabad"],
+    "Manipur": ["Imphal","Thoubal","Bishnupur"],
+    "Meghalaya": ["Shillong","Tura","Jowai"],
+    "Mizoram": ["Aizawl","Lunglei","Champhai"],
+    "Nagaland": ["Kohima","Dimapur","Mokokchung"],
+    "Odisha": ["Bhubaneswar","Cuttack","Rourkela","Berhampur","Sambalpur"],
+    "Punjab": ["Chandigarh","Ludhiana","Amritsar","Jalandhar","Patiala"],
+    "Rajasthan": ["Jaipur","Jodhpur","Udaipur","Kota","Ajmer","Bikaner"],
+    "Sikkim": ["Gangtok","Namchi","Pelling"],
+    "Tamil Nadu": ["Chennai","Coimbatore","Madurai","Salem","Tiruchirappalli"],
+    "Telangana": ["Hyderabad","Warangal","Nizamabad","Karimnagar","Khammam"],
+    "Tripura": ["Agartala","Udaipur","Dharmanagar"],
+    "Uttar Pradesh": ["Lucknow","Kanpur","Agra","Varanasi","Noida","Ghaziabad","Prayagraj"],
+    "Uttarakhand": ["Dehradun","Haridwar","Rishikesh","Nainital","Roorkee"],
+    "West Bengal": ["Kolkata","Howrah","Durgapur","Asansol","Siliguri"]
+  },
+  "United States": {
+    "California": ["Los Angeles","San Francisco","San Diego","San Jose"],
+    "New York": ["New York City","Buffalo","Rochester","Albany"],
+    "Texas": ["Houston","Dallas","Austin","San Antonio"],
+    "Florida": ["Miami","Orlando","Tampa","Jacksonville"],
+    "Illinois": ["Chicago","Springfield","Naperville"]
+  },
+  "United Kingdom": {
+    "England": ["London","Manchester","Birmingham","Liverpool","Leeds"],
+    "Scotland": ["Edinburgh","Glasgow","Aberdeen"],
+    "Wales": ["Cardiff","Swansea","Newport"]
+  },
+  "Canada": {
+    "Ontario": ["Toronto","Ottawa","Mississauga","Hamilton"],
+    "British Columbia": ["Vancouver","Victoria","Surrey"],
+    "Quebec": ["Montreal","Quebec City","Laval"],
+    "Alberta": ["Calgary","Edmonton","Red Deer"]
+  },
+  "Australia": {
+    "New South Wales": ["Sydney","Newcastle","Wollongong"],
+    "Victoria": ["Melbourne","Geelong","Ballarat"],
+    "Queensland": ["Brisbane","Gold Coast","Cairns"]
+  },
+  "Germany": {"Bavaria":["Munich","Nuremberg"],"Berlin":["Berlin"],"Hamburg":["Hamburg"],"Hesse":["Frankfurt","Wiesbaden"]},
+  "France": {"Île-de-France":["Paris"],"Provence":["Marseille","Nice"],"Auvergne-Rhône-Alpes":["Lyon"]},
+  "Japan": {"Tokyo":["Tokyo","Shibuya","Shinjuku"],"Osaka":["Osaka","Sakai"],"Kyoto":["Kyoto"]},
+  "Singapore": {"Singapore":["Singapore"]},
+  "UAE": {"Dubai":["Dubai"],"Abu Dhabi":["Abu Dhabi"],"Sharjah":["Sharjah"]}
+};
+
+function openCheckoutModal() {
+  document.getElementById('checkoutModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  onCountryChange(); // populate states
+}
+function closeCheckoutModal() {
+  document.getElementById('checkoutModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function onCountryChange() {
+  const country = document.getElementById('countrySelect').value;
+  const stateSelect = document.getElementById('stateSelect');
+  const citySelect = document.getElementById('citySelect');
+  stateSelect.innerHTML = '<option value="">Select State</option>';
+  citySelect.innerHTML = '<option value="">Select City</option>';
+  if (country && mapData[country]) {
+    Object.keys(mapData[country]).forEach(state => {
+      stateSelect.innerHTML += `<option value="${state}">${state}</option>`;
+    });
+  }
+}
+
+function onStateChange() {
+  const country = document.getElementById('countrySelect').value;
+  const state = document.getElementById('stateSelect').value;
+  const citySelect = document.getElementById('citySelect');
+  citySelect.innerHTML = '<option value="">Select City</option>';
+  if (country && state && mapData[country] && mapData[country][state]) {
+    mapData[country][state].forEach(city => {
+      citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+    });
+  }
+}
+
+// Close modal on Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCheckoutModal(); });
+</script>
 <%- include('../partials/footer') %>

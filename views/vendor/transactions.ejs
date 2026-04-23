@@ -1,56 +1,35 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Vendor</div>
-  <div class="navbar-links">
-    <a href="/vendor" class="nav-link">Home</a>
-    <a href="/vendor/transactions" class="nav-link active">Transactions</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
+<div class="app-layout">
+  <%- include('../partials/sidebar-vendor') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1>Transactions</h1><p>View all your order transactions</p></div>
+      <% if (transactions && transactions.length > 0) { %>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+          <% transactions.forEach(t => { %>
+            <tr>
+              <td>#<%= t.id %></td>
+              <td><%= t.user_name %></td>
+              <td><%= t.product_name %></td>
+              <td><%= t.quantity %></td>
+              <td>₹<%= (t.item_price * t.quantity).toFixed(2) %></td>
+              <td><%= t.payment_method %></td>
+              <td><span class="status-badge <%= t.status === 'Out For Delivery' ? 'status-delivered' : t.status === 'Ready for Shipping' ? 'status-shipped' : 'status-pending' %>"><%= t.status %></span></td>
+              <td><%= new Date(t.created_at).toLocaleDateString() %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="card card-body text-center"><p style="color:var(--text-tri)">No transactions yet.</p></div>
+      <% } %>
+    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-</nav>
-<div class="main-container">
-  <div class="page-header">
-    <h1>Transactions</h1>
-    <p>User orders and payment history</p>
-  </div>
-  <% if (transactions && transactions.length > 0) { %>
-  <div class="table-container card">
-    <table>
-      <thead>
-        <tr>
-          <th>Order #</th>
-          <th>User</th>
-          <th>Product</th>
-          <th>Qty</th>
-          <th>Price</th>
-          <th>Payment</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% transactions.forEach(t => { %>
-        <tr>
-          <td>#<%= t.id %></td>
-          <td><%= t.user_name %></td>
-          <td><%= t.product_name %></td>
-          <td><%= t.quantity %></td>
-          <td>₹<%= t.item_price.toFixed(2) %></td>
-          <td><%= t.payment_method %></td>
-          <td>
-            <span class="status-badge <%= t.status === 'Received' ? 'status-received' : t.status === 'Ready for Shipping' ? 'status-shipping' : 'status-delivery' %>">
-              <%= t.status %>
-            </span>
-          </td>
-          <td><%= new Date(t.created_at).toLocaleDateString() %></td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);">No transactions yet.</p>
-  </div>
-  <% } %>
 </div>
 <%- include('../partials/footer') %>

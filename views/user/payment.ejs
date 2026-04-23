@@ -1,0 +1,100 @@
+<%- include('../partials/header') %>
+<div class="payment-page">
+  <div class="payment-card">
+    <div class="payment-header">
+      <span class="material-icons-outlined" style="font-size:40px">lock</span>
+      <h2>Processing Payment</h2>
+      <p>Please wait while we process your transaction securely</p>
+    </div>
+    <div class="payment-body">
+      <div class="payment-amount">₹<%= totalAmount.toFixed(2) %></div>
+      <p style="color:var(--text-tri);font-size:13px;margin-bottom:4px"><%= name %> • <%= itemCount %> item<%= itemCount > 1 ? 's' : '' %></p>
+      <p style="font-size:13px;font-weight:600;color:var(--text-sec)"><%= payment_method %></p>
+
+      <div class="payment-spinner" id="paymentSpinner"></div>
+      <p style="font-size:13px;color:var(--text-sec)" id="statusText">Connecting to payment gateway...</p>
+
+      <div class="payment-steps">
+        <div class="payment-step active" id="step1">
+          <div class="step-icon"><span class="material-icons-outlined" style="font-size:16px">link</span></div>
+          <span>Connecting to payment gateway</span>
+        </div>
+        <div class="payment-step" id="step2">
+          <div class="step-icon"><span class="material-icons-outlined" style="font-size:16px">verified_user</span></div>
+          <span>Verifying payment details</span>
+        </div>
+        <div class="payment-step" id="step3">
+          <div class="step-icon"><span class="material-icons-outlined" style="font-size:16px">credit_card</span></div>
+          <span>Processing transaction</span>
+        </div>
+        <div class="payment-step" id="step4">
+          <div class="step-icon"><span class="material-icons-outlined" style="font-size:16px">check_circle</span></div>
+          <span>Confirming order</span>
+        </div>
+      </div>
+
+      <form action="/user/payment/confirm" method="POST" id="confirmForm" style="display:none">
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="confirmBtn" disabled>
+          <span class="material-icons-outlined" style="font-size:18px">check_circle</span> Payment Successful — View Order
+        </button>
+      </form>
+
+      <div style="margin-top:12px">
+        <a href="/user/cart" id="cancelLink" class="btn btn-secondary btn-block"><span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Cancel Payment</a>
+      </div>
+
+      <div class="checkout-security mt-2">
+        <span class="material-icons-outlined" style="font-size:14px">shield</span>
+        256-bit SSL Encrypted • PCI DSS Compliant
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const steps = ['step1','step2','step3','step4'];
+  const msgs = [
+    'Connecting to payment gateway...',
+    'Verifying payment details...',
+    'Processing transaction...',
+    'Payment successful! Confirming order...'
+  ];
+
+  let current = 0;
+
+  function advanceStep() {
+    if (current > 0) {
+      const prev = document.getElementById(steps[current - 1]);
+      prev.classList.remove('active');
+      prev.classList.add('done');
+      prev.querySelector('.step-icon').innerHTML = '<span class="material-icons-outlined" style="font-size:16px">check</span>';
+    }
+    if (current < steps.length) {
+      document.getElementById(steps[current]).classList.add('active');
+      document.getElementById('statusText').textContent = msgs[current];
+      current++;
+      if (current < steps.length) {
+        setTimeout(advanceStep, 1200 + Math.random() * 800);
+      } else {
+        // Final step - complete
+        setTimeout(() => {
+          const last = document.getElementById(steps[current - 1]);
+          last.classList.remove('active');
+          last.classList.add('done');
+          last.querySelector('.step-icon').innerHTML = '<span class="material-icons-outlined" style="font-size:16px">check</span>';
+
+          document.getElementById('paymentSpinner').style.display = 'none';
+          document.getElementById('statusText').innerHTML = '<span style="color:var(--success);font-weight:600">✅ Payment Successful!</span>';
+          document.getElementById('confirmForm').style.display = 'block';
+          document.getElementById('confirmBtn').disabled = false;
+          document.getElementById('cancelLink').style.display = 'none';
+        }, 800);
+      }
+    }
+  }
+
+  setTimeout(advanceStep, 600);
+})();
+</script>
+<%- include('../partials/footer') %>

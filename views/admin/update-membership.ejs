@@ -1,101 +1,58 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Admin</div>
-  <div class="navbar-links">
-    <a href="/admin" class="nav-link">Home</a>
-    <a href="/admin/maintain-<%= type %>" class="nav-link">Back</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="auth-container">
-    <div class="card">
-      <div class="card-header">
-        <h2>Update <%= type.charAt(0).toUpperCase() + type.slice(1) %> Membership</h2>
-      </div>
-      <div class="card-body">
-        <% if (locals.error) { %>
-          <div class="alert alert-error"><%= error %></div>
-        <% } %>
-        <% if (locals.success) { %>
-          <div class="alert alert-success"><%= success %></div>
-        <% } %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-admin') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1>Update <%= type.charAt(0).toUpperCase() + type.slice(1) %> Membership</h1><p>Look up and manage existing memberships</p></div>
+      <div class="card" style="max-width:520px">
+        <div class="card-header"><h2>Membership Lookup</h2></div>
+        <div class="card-body">
+          <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+          <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
 
-        <!-- Step 1: Look up by Membership Number -->
-        <form action="/admin/membership/lookup/<%= type %>" method="POST" data-validate>
-          <div class="form-group">
-            <label for="membership_id">Membership Number *</label>
-            <input type="number" name="membership_id" id="membership_id" class="form-control" placeholder="Enter Membership Number" required data-label="Membership Number" value="<%= membership ? membership.id : '' %>">
-          </div>
-          <button type="submit" class="btn btn-outline btn-block">Look Up Membership</button>
-        </form>
+          <form action="/admin/membership/lookup/<%= type %>" method="POST" data-validate>
+            <div class="form-group"><label>Membership Number *</label><input type="number" name="membership_id" class="form-control" placeholder="Enter Membership Number" required data-label="Membership Number" value="<%= membership ? membership.id : '' %>"></div>
+            <button type="submit" class="btn btn-outline btn-block">Look Up Membership</button>
+          </form>
 
-        <% if (membership) { %>
-        <hr style="margin:1.5rem 0;border:1px solid var(--border);">
-        <h3 style="margin-bottom:1rem;font-size:1.1rem;">Membership Details</h3>
+          <% if (membership) { %>
+          <hr style="margin:20px 0;border:1px solid var(--border-lt)">
+          <h3 style="margin-bottom:12px;font-size:15px">Membership Details</h3>
+          <div style="background:var(--muted);padding:14px;border-radius:var(--radius-sm);margin-bottom:16px;font-size:13px">
+            <div class="d-flex justify-between mb-1"><span>ID:</span><strong>#<%= membership.id %></strong></div>
+            <div class="d-flex justify-between mb-1"><span>Name:</span><strong><%= membership.member_name %></strong></div>
+            <div class="d-flex justify-between mb-1"><span>Email:</span><strong><%= membership.member_email %></strong></div>
+            <% if (membership.member_phone) { %><div class="d-flex justify-between mb-1"><span>Phone:</span><strong><%= membership.member_phone %></strong></div><% } %>
+            <div class="d-flex justify-between mb-1"><span>Duration:</span><strong><%= membership.duration %></strong></div>
+            <div class="d-flex justify-between mb-1"><span>Start Date:</span><strong><%= membership.start_date %></strong></div>
+            <div class="d-flex justify-between mb-1"><span>End Date:</span><strong><%= membership.end_date %></strong></div>
+            <div class="d-flex justify-between mb-1"><span>Status:</span><strong style="color:<%= membership.status === 'active' ? 'var(--success)' : 'var(--danger)' %>"><%= membership.status %></strong></div>
+          </div>
 
-        <div style="background:var(--bg-muted);padding:1rem;border-radius:var(--radius-sm);margin-bottom:1.5rem;">
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>ID:</span> <strong>#<%= membership.id %></strong>
-          </div>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>Name:</span> <strong><%= membership.member_name %></strong>
-          </div>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>Email:</span> <strong><%= membership.member_email %></strong>
-          </div>
-          <% if (membership.member_phone) { %>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>Phone:</span> <strong><%= membership.member_phone %></strong>
-          </div>
-          <% } %>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>Duration:</span> <strong><%= membership.duration %></strong>
-          </div>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>Start Date:</span> <strong><%= membership.start_date %></strong>
-          </div>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>End Date:</span> <strong><%= membership.end_date %></strong>
-          </div>
-          <div class="detail-row d-flex justify-between mb-1">
-            <span>Status:</span> <strong style="color:<%= membership.status === 'active' ? 'var(--success)' : 'var(--danger)' %>"><%= membership.status %></strong>
-          </div>
-        </div>
-
-        <!-- Extend Membership -->
-        <form action="/admin/membership/update/<%= type %>" method="POST">
-          <input type="hidden" name="membership_id" value="<%= membership.id %>">
-          <input type="hidden" name="action" value="extend">
-          <div class="form-group">
-            <label>Extend By:</label>
-            <div class="radio-group">
-              <label class="radio-option">
-                <input type="radio" name="extension_duration" value="6 months" checked>
-                <span>6 Months</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="extension_duration" value="1 year">
-                <span>1 Year</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="extension_duration" value="2 years">
-                <span>2 Years</span>
-              </label>
+          <form action="/admin/membership/update/<%= type %>" method="POST">
+            <input type="hidden" name="membership_id" value="<%= membership.id %>">
+            <input type="hidden" name="action" value="extend">
+            <div class="form-group"><label>Extend By:</label>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="extension_duration" value="6 months" checked><span>6 Months</span></label>
+                <label class="radio-option"><input type="radio" name="extension_duration" value="1 year"><span>1 Year</span></label>
+                <label class="radio-option"><input type="radio" name="extension_duration" value="2 years"><span>2 Years</span></label>
+              </div>
             </div>
-          </div>
-          <button type="submit" class="btn btn-success btn-block">Extend Membership</button>
-        </form>
+            <button type="submit" class="btn btn-success btn-block">Extend Membership</button>
+          </form>
 
-        <!-- Cancel Membership -->
-        <form action="/admin/membership/update/<%= type %>" method="POST" style="margin-top:0.8rem;">
-          <input type="hidden" name="membership_id" value="<%= membership.id %>">
-          <input type="hidden" name="action" value="cancel">
-          <button type="submit" class="btn btn-danger btn-block" onclick="return confirm('Are you sure you want to cancel this membership?')">Cancel Membership</button>
-        </form>
-        <% } %>
+          <form action="/admin/membership/update/<%= type %>" method="POST" style="margin-top:8px">
+            <input type="hidden" name="membership_id" value="<%= membership.id %>">
+            <input type="hidden" name="action" value="cancel">
+            <button type="submit" class="btn btn-danger btn-block" onclick="return confirm('Cancel this membership?')">Cancel Membership</button>
+          </form>
+          <% } %>
+        </div>
       </div>
     </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

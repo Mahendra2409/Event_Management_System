@@ -1,52 +1,78 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link">Home</a>
-    <a href="/user/vendors" class="nav-link active">Vendor</a>
-    <a href="/user/cart" class="nav-link">Cart</a>
-    <a href="/user/guest-list" class="nav-link">Guest List</a>
-    <a href="/user/order-status" class="nav-link">Order Status</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <% if (locals.success) { %>
-    <div class="alert alert-success"><%= success %></div>
-  <% } %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+      <div class="page-header"><h1>Vendors</h1><p>Browse and choose the best vendors for your event</p></div>
 
-  <div class="page-header">
-    <h1>Vendors</h1>
-    <p>Browse vendors by category</p>
-  </div>
+      <!-- Search & Filter Bar -->
+      <div class="filter-bar">
+        <span class="material-icons-outlined" style="color:var(--text-tri)">search</span>
+        <input type="text" id="vendorSearch" class="form-control" placeholder="Search vendors by name or email..." style="flex:1;border:none;box-shadow:none;background:transparent" oninput="filterVendors()">
+        <div style="height:24px;width:1px;background:var(--border)"></div>
+        <label style="white-space:nowrap">Category:</label>
+        <select id="categoryFilter" class="form-control" style="width:160px" onchange="window.location.href='/user/vendors?category='+this.value">
+          <option value="all" <%= selectedCategory === 'all' ? 'selected' : '' %>>All Categories</option>
+          <option value="Catering" <%= selectedCategory === 'Catering' ? 'selected' : '' %>>🍽️ Catering</option>
+          <option value="Florist" <%= selectedCategory === 'Florist' ? 'selected' : '' %>>🌸 Florist</option>
+          <option value="Decoration" <%= selectedCategory === 'Decoration' ? 'selected' : '' %>>🎨 Decoration</option>
+          <option value="Lighting" <%= selectedCategory === 'Lighting' ? 'selected' : '' %>>💡 Lighting</option>
+        </select>
+      </div>
 
-  <div class="filter-bar">
-    <label for="category-filter">Category:</label>
-    <form action="/user/vendors" method="GET" style="display:flex;gap:0.5rem;align-items:center;">
-      <select name="category" id="category-filter" class="form-control" style="width:200px;" onchange="this.form.submit()">
-        <option value="all" <%= selectedCategory === 'all' ? 'selected' : '' %>>All Categories</option>
-        <% categories.forEach(cat => { %>
-          <option value="<%= cat %>" <%= selectedCategory === cat ? 'selected' : '' %>><%= cat %></option>
+      <div class="category-filters">
+        <a href="/user/vendors?category=all" class="cat-pill <%= selectedCategory === 'all' ? 'active' : '' %>"><span class="material-icons-outlined" style="font-size:16px">grid_view</span> All</a>
+        <a href="/user/vendors?category=Catering" class="cat-pill <%= selectedCategory === 'Catering' ? 'active' : '' %>">🍽️ Catering</a>
+        <a href="/user/vendors?category=Florist" class="cat-pill <%= selectedCategory === 'Florist' ? 'active' : '' %>">🌸 Florist</a>
+        <a href="/user/vendors?category=Decoration" class="cat-pill <%= selectedCategory === 'Decoration' ? 'active' : '' %>">🎨 Decoration</a>
+        <a href="/user/vendors?category=Lighting" class="cat-pill <%= selectedCategory === 'Lighting' ? 'active' : '' %>">💡 Lighting</a>
+      </div>
+
+      <% if (vendors && vendors.length > 0) { %>
+      <div class="products-grid" id="vendorGrid">
+        <% vendors.forEach(v => { %>
+        <div class="vendor-card" data-name="<%= v.name.toLowerCase() %>" data-email="<%= v.email.toLowerCase() %>">
+          <div class="vendor-card-cover">
+            <div class="vendor-card-avatar"><%= v.name.charAt(0) %></div>
+          </div>
+          <div class="vendor-card-body">
+            <h3><%= v.name %></h3>
+            <span class="vendor-cat-badge <%= v.category ? v.category.toLowerCase() : '' %>"><%= v.category %></span>
+            <div class="vendor-card-info"><span class="material-icons-outlined">mail</span> <%= v.email %></div>
+            <% if (v.phone) { %>
+              <div class="vendor-card-info"><span class="material-icons-outlined">phone</span> <%= v.phone %></div>
+            <% } %>
+            <% if (v.location) { %>
+              <div class="vendor-card-info"><span class="material-icons-outlined">location_on</span> <%= v.location %></div>
+            <% } %>
+            <a href="/user/vendors/<%= v.id %>/products" class="btn btn-outline btn-block" style="margin-top:8px">
+              <span class="material-icons-outlined" style="font-size:16px">shopping_bag</span> Shop Items
+            </a>
+          </div>
+        </div>
         <% }) %>
-      </select>
-    </form>
-  </div>
-
-  <% if (vendors && vendors.length > 0) { %>
-  <div class="products-grid">
-    <% vendors.forEach(v => { %>
-    <div class="vendor-card">
-      <h3><%= v.name %></h3>
-      <div class="vendor-category"><span class="material-icons-outlined" style="font-size:0.95rem;">sell</span> <%= v.category %></div>
-      <div class="vendor-email"><span class="material-icons-outlined" style="font-size:0.95rem;">mail</span> <%= v.email %></div>
-      <a href="/user/vendors/<%= v.id %>/products" class="btn">Shop Items</a>
+      </div>
+      <% } else { %>
+      <div class="card card-body text-center" style="padding:48px">
+        <span class="material-icons-outlined" style="font-size:48px;color:var(--text-tri)">storefront</span>
+        <h3 style="margin:12px 0 4px">No Vendors Found</h3>
+        <p style="color:var(--text-tri)">No vendors found for this category.</p>
+      </div>
+      <% } %>
     </div>
-    <% }) %>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);">No vendors found for this category.</p>
-  </div>
-  <% } %>
 </div>
+<script>
+function filterVendors() {
+  const q = document.getElementById('vendorSearch').value.toLowerCase();
+  document.querySelectorAll('#vendorGrid .vendor-card').forEach(card => {
+    const name = card.dataset.name;
+    const email = card.dataset.email;
+    card.style.display = (name.includes(q) || email.includes(q)) ? '' : 'none';
+  });
+}
+</script>
 <%- include('../partials/footer') %>

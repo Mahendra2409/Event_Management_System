@@ -1,57 +1,42 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> User</div>
-  <div class="navbar-links">
-    <a href="/user" class="nav-link">Home</a>
-    <a href="/user/vendors" class="nav-link">Vendor</a>
-    <a href="/user/cart" class="nav-link">Cart</a>
-    <a href="/user/guest-list" class="nav-link">Guest List</a>
-    <a href="/user/order-status" class="nav-link active">Order Status</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="page-header">
-    <h1>User Order Status</h1>
-    <p>Track your orders</p>
-  </div>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1>Order Status</h1><p>Track and view the status of all your orders</p></div>
 
-  <% if (orders && orders.length > 0) { %>
-  <div class="table-container card">
-    <table>
-      <thead>
-        <tr>
-          <th>Order #</th>
-          <th>Name</th>
-          <th>E-mail</th>
-          <th>Address</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% orders.forEach(o => { %>
-        <tr>
-          <td>#<%= o.id %></td>
-          <td><%= o.name %></td>
-          <td><%= o.email %></td>
-          <td><%= o.address %>, <%= o.city %>, <%= o.state %> - <%= o.pincode %></td>
-          <td>
-            <span class="status-badge <%= o.status === 'Received' ? 'status-received' : o.status === 'Ready for Shipping' ? 'status-shipping' : o.status === 'Out For Delivery' ? 'status-delivery' : 'status-cancelled' %>">
-              <%= o.status %>
-            </span>
-          </td>
-          <td><%= new Date(o.created_at).toLocaleDateString() %></td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">receipt_long</span></div><div><div class="stat-num"><%= stats.total %></div><div class="stat-label">Total Orders</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon orange"><span class="material-icons-outlined">hourglass_top</span></div><div><div class="stat-num"><%= stats.pending %></div><div class="stat-label">Pending</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon blue"><span class="material-icons-outlined">local_shipping</span></div><div><div class="stat-num"><%= stats.shipped %></div><div class="stat-label">Shipped</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">check_circle</span></div><div><div class="stat-num"><%= stats.delivered %></div><div class="stat-label">Delivered</div></div></div>
+        <div class="stat-card"><div class="stat-card-icon red"><span class="material-icons-outlined">cancel</span></div><div><div class="stat-num"><%= stats.cancelled %></div><div class="stat-label">Cancelled</div></div></div>
+      </div>
+
+      <% if (orders && orders.length > 0) { %>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Order ID</th><th>Name</th><th>Address</th><th>Order Date</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td><strong>#<%= o.id %></strong></td>
+              <td><%= o.name %></td>
+              <td><%= o.address %>, <%= o.city %></td>
+              <td><%= new Date(o.created_at).toLocaleDateString() %></td>
+              <td style="font-weight:600">₹<%= o.total_amount.toFixed(2) %></td>
+              <td><span class="status-badge <%= o.status === 'Out For Delivery' ? 'status-delivered' : o.status === 'Ready for Shipping' ? 'status-shipped' : o.status === 'Cancelled' ? 'status-cancelled' : 'status-pending' %>"><%= o.status %></span></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="card card-body text-center"><p style="color:var(--text-tri)">No orders yet.</p></div>
+      <% } %>
+    </div>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);margin-bottom:1rem;">No orders yet.</p>
-    <a href="/user/vendors" class="btn btn-primary">Start Shopping</a>
-  </div>
-  <% } %>
 </div>
 <%- include('../partials/footer') %>

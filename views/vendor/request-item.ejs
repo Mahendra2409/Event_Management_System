@@ -1,34 +1,32 @@
 <%- include('../partials/header') %>
-<nav class="navbar">
-  <div class="navbar-brand"><span>EMS</span> Vendor</div>
-  <div class="navbar-links">
-    <a href="/vendor" class="nav-link">Home</a>
-    <a href="/vendor/request-items" class="nav-link active">Request Items</a>
-    <a href="/logout" class="nav-link logout">LogOut</a>
-  </div>
-</nav>
-<div class="main-container">
-  <div class="page-header">
-    <h1>Request Items</h1>
-    <p>User requests for products</p>
-  </div>
-  <% if (requests && requests.length > 0) { %>
-  <div class="products-grid">
-    <% requests.forEach(r => { %>
-    <div class="product-card">
-      <div class="product-info" style="padding:1.5rem;">
-        <div class="product-name"><%= r.product_name %></div>
-        <p style="color:var(--text-tertiary);font-size:0.85rem;margin:0.3rem 0;">From: <%= r.user_name %></p>
-        <p style="color:var(--text-tertiary);font-size:0.85rem;margin-bottom:0.8rem;"><%= r.request_details || 'No details' %></p>
-        <span class="status-badge status-received"><%= r.status %></span>
+<div class="app-layout">
+  <%- include('../partials/sidebar-vendor') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1>Request Items</h1><p>View requests from users for new items</p></div>
+      <% if (requests && requests.length > 0) { %>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>#</th><th>User</th><th>Product Requested</th><th>Details</th><th>Date</th></tr></thead>
+          <tbody>
+          <% requests.forEach((r, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= r.user_name %></td>
+              <td><strong><%= r.product_name %></strong></td>
+              <td><%= r.request_details || '-' %></td>
+              <td><%= new Date(r.created_at).toLocaleDateString() %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
       </div>
+      <% } else { %>
+      <div class="card card-body text-center"><p style="color:var(--text-tri)">No item requests yet.</p></div>
+      <% } %>
     </div>
-    <% }) %>
+    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
   </div>
-  <% } else { %>
-  <div class="card card-body text-center">
-    <p style="color:var(--text-tertiary);">No user requests yet.</p>
-  </div>
-  <% } %>
 </div>
 <%- include('../partials/footer') %>
