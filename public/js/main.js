@@ -1,92 +1,66 @@
-document.addEventListener('DOMContentLoaded', () => {
+// NexCart — Main JavaScript
+document.addEventListener('DOMContentLoaded', function () {
+  // Sidebar toggle (mobile)
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+
+  if (toggle && sidebar) {
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('open');
+    });
+  }
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+  }
+
   // Form validation
-  const forms = document.querySelectorAll('form[data-validate]');
-  forms.forEach(form => {
-    form.addEventListener('submit', (e) => {
-      const requiredFields = form.querySelectorAll('[required]');
-      let isValid = true;
-      requiredFields.forEach(field => {
-        const errorEl = field.parentElement.querySelector('.field-error');
-        if (errorEl) errorEl.remove();
-        if (!field.value.trim()) {
-          isValid = false;
-          field.style.borderColor = '#dc2626';
-          const error = document.createElement('small');
-          error.className = 'field-error';
-          error.style.cssText = 'color:#dc2626;font-size:12px;margin-top:4px;display:block';
-          error.textContent = `${field.getAttribute('data-label') || 'This field'} is required`;
-          field.parentElement.appendChild(error);
-        } else { field.style.borderColor = ''; }
-      });
-      const emailFields = form.querySelectorAll('input[type="email"]');
-      emailFields.forEach(field => {
-        if (field.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
-          isValid = false;
-          field.style.borderColor = '#dc2626';
-          if (!field.parentElement.querySelector('.field-error')) {
-            const error = document.createElement('small');
-            error.className = 'field-error';
-            error.style.cssText = 'color:#dc2626;font-size:12px;margin-top:4px;display:block';
-            error.textContent = 'Please enter a valid email address';
-            field.parentElement.appendChild(error);
-          }
+  document.querySelectorAll('form[data-validate]').forEach(form => {
+    form.addEventListener('submit', function (e) {
+      let valid = true;
+      form.querySelectorAll('[required]').forEach(input => {
+        if (!input.value.trim()) {
+          valid = false;
+          input.style.borderColor = 'var(--danger)';
+          input.style.boxShadow = '0 0 0 3px rgba(239,68,68,.12)';
+          input.addEventListener('input', function handler() {
+            input.style.borderColor = '';
+            input.style.boxShadow = '';
+            input.removeEventListener('input', handler);
+          });
         }
       });
-      if (!isValid) e.preventDefault();
-    });
-  });
-
-  // Clear field errors on input
-  document.querySelectorAll('.form-control').forEach(field => {
-    field.addEventListener('input', () => {
-      field.style.borderColor = '';
-      const errorEl = field.parentElement.querySelector('.field-error');
-      if (errorEl) errorEl.remove();
+      if (!valid) e.preventDefault();
     });
   });
 
   // Auto-dismiss alerts
   document.querySelectorAll('.alert').forEach(alert => {
     setTimeout(() => {
+      alert.style.transition = 'opacity .3s, transform .3s';
       alert.style.opacity = '0';
-      alert.style.transform = 'translateY(-6px)';
-      alert.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-      setTimeout(() => alert.remove(), 250);
-    }, 5000);
+      alert.style.transform = 'translateY(-8px)';
+      setTimeout(() => alert.remove(), 300);
+    }, 4000);
   });
 
-  // Sidebar toggle
-  const sidebarToggle = document.getElementById('sidebarToggle');
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('open');
-    });
-    if (overlay) {
-      overlay.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('open');
-      });
-    }
-  }
-
-  // Cart quantity auto-submit
+  // Cart quantity change auto-submit
   document.querySelectorAll('.qty-select').forEach(select => {
-    select.addEventListener('change', () => {
-      select.closest('form').submit();
+    select.addEventListener('change', function () {
+      this.closest('form').submit();
     });
   });
 
-  // Role tab switching (login page)
-  const roleTabs = document.querySelectorAll('.role-tab');
-  const roleInput = document.getElementById('role-input');
-  roleTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      roleTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      if (roleInput) roleInput.value = tab.dataset.role;
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
   });
 });

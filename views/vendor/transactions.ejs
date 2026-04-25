@@ -1,35 +1,10 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-vendor') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <div class="page-header"><h1>Transactions</h1><p>View all your order transactions</p></div>
-      <% if (transactions && transactions.length > 0) { %>
-      <div class="table-container">
-        <table>
-          <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
-          <tbody>
-          <% transactions.forEach(t => { %>
-            <tr>
-              <td>#<%= t.id %></td>
-              <td><%= t.user_name %></td>
-              <td><%= t.product_name %></td>
-              <td><%= t.quantity %></td>
-              <td>₹<%= (t.item_price * t.quantity).toFixed(2) %></td>
-              <td><%= t.payment_method %></td>
-              <td><span class="status-badge <%= t.status === 'Out For Delivery' ? 'status-delivered' : t.status === 'Ready for Shipping' ? 'status-shipped' : 'status-pending' %>"><%= t.status %></span></td>
-              <td><%= new Date(t.created_at).toLocaleDateString() %></td>
-            </tr>
-          <% }) %>
-          </tbody>
-        </table>
-      </div>
-      <% } else { %>
-      <div class="card card-body text-center"><p style="color:var(--text-tri)">No transactions yet.</p></div>
-      <% } %>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
-  </div>
-</div>
+<div class="app-layout"><%- include('../partials/sidebar-vendor') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <div class="page-header"><h1>Transactions</h1></div>
+  <% if (transactions && transactions.length > 0) { %>
+  <div class="table-container"><table><thead><tr><th>Order</th><th>Customer</th><th>Product</th><th>Qty</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>
+    <% transactions.forEach(t => { %><tr><td>#<%= t.id %></td><td><%= t.user_name %></td><td><%= t.product_name %></td><td><%= t.quantity %></td><td>₹<%= (t.item_price * t.quantity).toFixed(2) %></td><td><span class="status-badge <%= t.status === 'Delivered' ? 'status-delivered' : t.status === 'Shipped' ? 'status-shipped' : 'status-processing' %>"><%= t.status %></span></td><td><%= new Date(t.created_at).toLocaleDateString() %></td></tr><% }) %>
+  </tbody></table></div>
+  <% } else { %><div class="card card-body text-center" style="padding:48px"><h3>No transactions yet</h3></div><% } %>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

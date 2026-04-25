@@ -20,17 +20,20 @@ function isUser(req, res, next) {
   if (req.session && req.session.user && req.session.user.role === 'user') {
     return next();
   }
-  req.session.error = 'Access denied. User login required.';
+  req.session.error = 'Please login to continue shopping.';
   return res.redirect('/login');
 }
 
-function isVendor(req, res, next) {
-  if (req.session && req.session.user && req.session.user.role === 'vendor') {
+function isSeller(req, res, next) {
+  if (req.session && req.session.user && req.session.user.role === 'seller') {
     return next();
   }
-  req.session.error = 'Access denied. Vendor login required.';
-  return res.redirect('/login');
+  req.session.error = 'Access denied. Seller login required.';
+  return res.redirect('/login/seller');
 }
+
+// Backward compat alias
+const isVendor = isSeller;
 
 function isAdminOrUser(req, res, next) {
   if (req.session && req.session.user && (req.session.user.role === 'admin' || req.session.user.role === 'user')) {
@@ -40,4 +43,4 @@ function isAdminOrUser(req, res, next) {
   return res.redirect('/login');
 }
 
-module.exports = { isAuthenticated, isAdmin, isUser, isVendor, isAdminOrUser };
+module.exports = { isAuthenticated, isAdmin, isUser, isSeller, isVendor, isAdminOrUser };

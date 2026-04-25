@@ -1,41 +1,11 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-vendor') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-      <div class="page-header"><h1>Product Status</h1><p>Manage and update the status of your products</p></div>
-
-      <div class="stat-cards">
-        <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">inventory_2</span></div><div><div class="stat-num"><%= products.length %></div><div class="stat-label">Total Products</div></div></div>
-        <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">check_circle</span></div><div><div class="stat-num"><%= products.length %></div><div class="stat-label">Active</div></div></div>
-      </div>
-
-      <% if (orders && orders.length > 0) { %>
-      <div class="table-container">
-        <table>
-          <thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Address</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
-          <tbody>
-          <% orders.forEach(o => { %>
-            <tr>
-              <td><strong>#<%= o.id %></strong></td>
-              <td><%= o.name %></td>
-              <td><%= o.email %></td>
-              <td><%= o.address %></td>
-              <td><span class="status-badge <%= o.status === 'Out For Delivery' ? 'status-delivered' : o.status === 'Ready for Shipping' ? 'status-shipped' : 'status-pending' %>"><%= o.status %></span></td>
-              <td><%= new Date(o.created_at).toLocaleDateString() %></td>
-              <td><a href="/vendor/update-order/<%= o.id %>" class="btn btn-sm btn-primary">Update</a></td>
-            </tr>
-          <% }) %>
-          </tbody>
-        </table>
-      </div>
-      <% } else { %>
-      <div class="card card-body text-center"><p style="color:var(--text-tri)">No orders to display.</p></div>
-      <% } %>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
-  </div>
-</div>
+<div class="app-layout"><%- include('../partials/sidebar-vendor') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <div class="page-header"><h1>Orders</h1><p>Manage incoming orders</p></div>
+  <% if (orders && orders.length > 0) { %>
+  <div class="table-container"><table><thead><tr><th>Order</th><th>Customer</th><th>Address</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody>
+    <% orders.forEach(o => { %><tr><td><strong>#<%= o.id %></strong></td><td><%= o.name %></td><td><%= o.address || '-' %></td><td><span class="status-badge <%= o.status === 'Delivered' ? 'status-delivered' : o.status === 'Shipped' ? 'status-shipped' : o.status === 'Cancelled' ? 'status-cancelled' : 'status-processing' %>"><%= o.status %></span></td><td><%= new Date(o.created_at).toLocaleDateString() %></td><td><a href="/seller/update-order/<%= o.id %>" class="btn btn-sm btn-outline">Update</a></td></tr><% }) %>
+  </tbody></table></div>
+  <% } else { %><div class="card card-body text-center" style="padding:48px"><h3>No orders yet</h3></div><% } %>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

@@ -3,38 +3,35 @@
 <div class="login-page">
   <div class="login-branding">
     <div class="login-brand-logo">
-      <span class="material-icons-outlined">event</span>
-      <div><strong>EMS</strong><br><small>Event Management System</small></div>
+      <span class="material-icons-outlined">shopping_bag</span>
+      <div><strong>NexCart</strong><br><small>Shop the Future</small></div>
     </div>
     <div class="login-welcome" id="brandTitle">
-      <%= role === 'admin' ? 'Welcome Admin!' : role === 'vendor' ? 'Welcome Vendor!' : 'Welcome User!' %>
+      <%= role === 'admin' ? 'Welcome Admin!' : role === 'seller' ? 'Welcome Seller!' : 'Welcome Back!' %>
     </div>
     <div class="login-welcome-bar"></div>
-    <div class="login-desc" id="brandDesc">
+    <div class="login-desc">
       <% if (role === 'admin') { %>
-        Log in to access the administrative dashboard and manage users, vendors, memberships, and system activities.
-      <% } else if (role === 'vendor') { %>
-        Login to your vendor account to manage your products, receive orders, update status and grow your business.
+        Access the admin dashboard to manage users, sellers, categories, orders, and platform analytics.
+      <% } else if (role === 'seller') { %>
+        Login to manage your products, track orders, view analytics and grow your business on NexCart.
       <% } else { %>
-        Login to your account to explore vendors, manage your cart, track orders and make your event unforgettable.
+        Login to discover amazing products, manage your cart, track orders and enjoy a seamless shopping experience.
       <% } %>
     </div>
-    <div class="login-features" id="brandFeatures">
+    <div class="login-features">
       <% if (role === 'admin') { %>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">security</span></div><div><h4>Secure Access</h4><p>Your security is our priority</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">group</span></div><div><h4>User & Vendor Management</h4><p>Add, update and manage all users</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">card_membership</span></div><div><h4>Membership Management</h4><p>Manage membership plans and records</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">bar_chart</span></div><div><h4>Reports & Analytics</h4><p>View reports and system analytics</p></div></div>
-      <% } else if (role === 'vendor') { %>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">inventory_2</span></div><div><h4>Manage Products</h4><p>Add, update and manage your products</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">shopping_cart</span></div><div><h4>Receive Orders</h4><p>View and manage incoming orders</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">analytics</span></div><div><h4>Track Performance</h4><p>Monitor your sales and performance</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">support_agent</span></div><div><h4>24/7 Support</h4><p>We are here to help you anytime</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">security</span></div><div><h4>Secure Access</h4><p>Enterprise-grade security</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">analytics</span></div><div><h4>Revenue Analytics</h4><p>Platform-wide insights</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">manage_accounts</span></div><div><h4>User Management</h4><p>Manage all platform users</p></div></div>
+      <% } else if (role === 'seller') { %>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">inventory_2</span></div><div><h4>Product Management</h4><p>Add, edit and manage listings</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">trending_up</span></div><div><h4>Sales Analytics</h4><p>Track your performance</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">payments</span></div><div><h4>Instant Payouts</h4><p>Fast and secure payments</p></div></div>
       <% } else { %>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">storefront</span></div><div><h4>Explore Vendors</h4><p>Browse and choose from trusted vendors</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">shopping_cart</span></div><div><h4>Manage Cart</h4><p>Add products and place orders easily</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">local_shipping</span></div><div><h4>Track Orders</h4><p>Track your order status in real-time</p></div></div>
-        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">group</span></div><div><h4>Guest List</h4><p>Manage your guest list seamlessly</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">local_shipping</span></div><div><h4>Fast Delivery</h4><p>Free shipping on orders ₹499+</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">verified</span></div><div><h4>Trusted Sellers</h4><p>Verified quality products</p></div></div>
+        <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">autorenew</span></div><div><h4>Easy Returns</h4><p>30-day hassle-free returns</p></div></div>
       <% } %>
     </div>
   </div>
@@ -42,32 +39,28 @@
     <div class="login-form-inner">
       <div class="login-form-header">
         <div class="login-icon">
-          <span class="material-icons-outlined"><%= role === 'admin' ? 'admin_panel_settings' : role === 'vendor' ? 'storefront' : 'person' %></span>
+          <span class="material-icons-outlined"><%= role === 'admin' ? 'admin_panel_settings' : role === 'seller' ? 'storefront' : 'person' %></span>
         </div>
         <div>
-          <h1><%= role === 'admin' ? 'Admin Login' : role === 'vendor' ? 'Vendor Login' : 'User Login' %></h1>
-          <p class="login-form-sub">Please enter your credentials to continue</p>
+          <h1><%= role === 'admin' ? 'Admin Login' : role === 'seller' ? 'Seller Login' : 'Login' %></h1>
+          <p class="login-form-sub">Enter your credentials to continue</p>
         </div>
       </div>
-
       <div class="login-divider"><span class="material-icons-outlined">lock</span></div>
-
       <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
       <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-
       <div class="role-tabs">
+        <a href="/login/user" class="role-tab <%= role === 'user' ? 'active' : '' %>">Customer</a>
+        <a href="/login/seller" class="role-tab <%= role === 'seller' ? 'active' : '' %>">Seller</a>
         <a href="/login/admin" class="role-tab <%= role === 'admin' ? 'active' : '' %>">Admin</a>
-        <a href="/login/user" class="role-tab <%= role === 'user' ? 'active' : '' %>">User</a>
-        <a href="/login/vendor" class="role-tab <%= role === 'vendor' ? 'active' : '' %>">Vendor</a>
       </div>
-
       <form action="/login" method="POST" data-validate>
-        <input type="hidden" name="role" id="role-input" value="<%= role %>">
+        <input type="hidden" name="role" value="<%= role %>">
         <div class="form-group">
-          <label for="email">User ID / Email</label>
+          <label for="email">Email Address</label>
           <div class="input-icon-wrap">
             <span class="material-icons-outlined">mail</span>
-            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email or user ID" required data-label="Email">
+            <input type="email" name="email" id="email" class="form-control" placeholder="you@example.com" required data-label="Email">
           </div>
         </div>
         <div class="form-group">
@@ -86,18 +79,15 @@
           <span class="material-icons-outlined">login</span> Login
         </button>
       </form>
-
       <div class="login-divider">or</div>
-
       <% if (role === 'admin') { %>
         <a href="/" class="btn btn-outline btn-block"><span class="material-icons-outlined">arrow_back</span> Back to Home</a>
-      <% } else if (role === 'vendor') { %>
-        <a href="/signup/vendor" class="btn btn-outline btn-block"><span class="material-icons-outlined">person_add</span> New Vendor? Sign Up</a>
+      <% } else if (role === 'seller') { %>
+        <a href="/signup/seller" class="btn btn-outline btn-block"><span class="material-icons-outlined">storefront</span> Start Selling on NexCart</a>
       <% } else { %>
-        <a href="/signup/user" class="btn btn-outline btn-block"><span class="material-icons-outlined">person_add</span> New User? Sign Up</a>
+        <a href="/signup/user" class="btn btn-outline btn-block"><span class="material-icons-outlined">person_add</span> Create an Account</a>
       <% } %>
-
-      <div class="login-footer">© 2025 Event Management System. All rights reserved.</div>
+      <div class="login-footer">© 2025 NexCart. All rights reserved.</div>
     </div>
   </div>
 </div>

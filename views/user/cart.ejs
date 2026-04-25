@@ -6,52 +6,44 @@
     <div class="content">
       <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
       <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
-
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div class="page-header" style="margin-bottom:0"><h1>Shopping Cart</h1><div class="breadcrumb"><a href="/user">Home</a> / Cart</div></div>
-        <a href="/user/vendors" class="btn btn-outline"><span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Continue Shopping</a>
+        <a href="/user/view-products" class="btn btn-outline"><span class="material-icons-outlined" style="font-size:16px">arrow_back</span> Continue Shopping</a>
       </div>
-
       <% if (cartItems && cartItems.length > 0) { %>
       <div class="table-container">
         <table>
-          <thead><tr><th>Item</th><th>Product Name</th><th>Price</th><th>Quantity</th><th>Total Price</th><th>Action</th></tr></thead>
+          <thead><tr><th>Item</th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>
           <tbody>
           <% cartItems.forEach(item => { %>
             <tr>
-              <td><div style="width:64px;height:64px;border-radius:8px;overflow:hidden;background:var(--muted)"><img src="/uploads/<%= item.image %>" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.src=''"></div></td>
-              <td><strong><%= item.name %></strong><br><small style="color:var(--text-tri)"><%= item.vendor_name %></small></td>
-              <td>₹<%= item.price.toFixed(2) %></td>
-              <td>
-                <form action="/user/cart/update/<%= item.id %>" method="POST" style="display:inline">
-                  <select name="quantity" class="form-control qty-select" style="width:70px;padding:4px 8px">
-                    <% for(let i=1;i<=10;i++){%><option value="<%=i%>" <%=item.quantity===i?'selected':''%>><%=i%></option><%}%>
-                  </select>
-                </form>
-              </td>
-              <td style="font-weight:600;color:var(--primary)">₹<%= item.total_price.toFixed(2) %></td>
-              <td><form action="/user/cart/remove/<%= item.id %>" method="POST" style="display:inline"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove this item?')"><span class="material-icons-outlined" style="font-size:14px">delete</span></button></form></td>
+              <td><div style="width:64px;height:64px;border-radius:10px;overflow:hidden;background:var(--muted)"><img src="/uploads/<%= item.image %>" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.src=''"></div></td>
+              <td><strong><%= item.name %></strong><br><small style="color:var(--text-tri)"><%= item.seller_name %></small></td>
+              <td><% if (item.discount_price) { %><span style="text-decoration:line-through;color:var(--text-tri);font-size:12px">₹<%= item.price.toFixed(2) %></span><br><% } %>₹<%= (item.discount_price || item.price).toFixed(2) %></td>
+              <td><form action="/user/cart/update/<%= item.id %>" method="POST" style="display:inline"><select name="quantity" class="form-control qty-select" style="width:70px;padding:4px 8px"><% for(let i=1;i<=10;i++){%><option value="<%=i%>" <%=item.quantity===i?'selected':''%>><%=i%></option><%}%></select></form></td>
+              <td style="font-weight:700;color:var(--primary)">₹<%= item.total_price.toFixed(2) %></td>
+              <td><form action="/user/cart/remove/<%= item.id %>" method="POST" style="display:inline"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove?')"><span class="material-icons-outlined" style="font-size:14px">delete</span></button></form></td>
             </tr>
           <% }) %>
           </tbody>
         </table>
       </div>
-
       <div class="cart-summary">
-        <strong style="font-size:16px">Grand Total</strong>
+        <div>
+          <strong style="font-size:16px">Grand Total</strong>
+          <% if (savings > 0) { %><br><span class="savings-badge"><span class="material-icons-outlined" style="font-size:14px">local_offer</span> You save ₹<%= savings.toFixed(2) %></span><% } %>
+        </div>
         <div class="grand-total">₹<%= grandTotal.toFixed(2) %></div>
         <div class="cart-actions">
-          <form action="/user/cart/clear" method="POST"><button type="submit" class="btn btn-outline" style="color:var(--danger);border-color:var(--danger)" onclick="return confirm('Delete all items?')"><span class="material-icons-outlined" style="font-size:14px">delete</span> Delete All</button></form>
+          <form action="/user/cart/clear" method="POST"><button type="submit" class="btn btn-outline" style="color:var(--danger);border-color:var(--danger)" onclick="return confirm('Clear cart?')"><span class="material-icons-outlined" style="font-size:14px">delete</span> Clear</button></form>
         </div>
       </div>
-
       <div class="text-center mt-3">
         <button type="button" class="btn btn-primary btn-lg" onclick="openCheckoutModal()">
           <span class="material-icons-outlined" style="font-size:18px">shopping_bag</span> Proceed to Checkout
         </button>
       </div>
-
-      <!-- CHECKOUT MODAL POPUP -->
+      <!-- CHECKOUT MODAL -->
       <div class="modal-overlay" id="checkoutModal" style="display:none">
         <div class="modal-backdrop" onclick="closeCheckoutModal()"></div>
         <div class="checkout-card modal-card">
@@ -64,180 +56,51 @@
             <form action="/user/checkout" method="POST" data-validate id="checkoutForm">
               <div class="grid-2">
                 <div class="form-group"><label>Full Name *</label><div class="input-icon-wrap"><span class="material-icons-outlined">person</span><input type="text" name="name" class="form-control" placeholder="John Doe" required data-label="Full Name"></div></div>
-                <div class="form-group"><label>Phone Number *</label><div class="input-icon-wrap"><span class="material-icons-outlined">phone</span><input type="text" name="number" class="form-control" placeholder="9876543210" required data-label="Phone Number" pattern="\d{10}" title="Enter 10 digit phone number"></div></div>
+                <div class="form-group"><label>Phone *</label><div class="input-icon-wrap"><span class="material-icons-outlined">phone</span><input type="text" name="number" class="form-control" placeholder="9876543210" required data-label="Phone" pattern="\d{10}" title="10-digit number"></div></div>
               </div>
-              <div class="form-group"><label>Email Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" placeholder="john@example.com" required data-label="Email"></div></div>
-
-              <div class="form-group"><label>Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">location_on</span><input type="text" name="address" class="form-control" placeholder="123, Main Street, Locality" required data-label="Address"></div></div>
-
+              <div class="form-group"><label>Email *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" placeholder="you@example.com" required data-label="Email"></div></div>
+              <div class="form-group"><label>Address *</label><div class="input-icon-wrap"><span class="material-icons-outlined">location_on</span><input type="text" name="address" class="form-control" placeholder="123, Main Street" required data-label="Address"></div></div>
               <div class="grid-2">
-                <div class="form-group"><label>Country *</label>
-                  <select name="country" id="countrySelect" class="form-control" required data-label="Country" onchange="onCountryChange()">
-                    <option value="">Select Country</option>
-                    <option value="India" selected>🇮🇳 India</option>
-                    <option value="United States">🇺🇸 United States</option>
-                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                    <option value="Canada">🇨🇦 Canada</option>
-                    <option value="Australia">🇦🇺 Australia</option>
-                    <option value="Germany">🇩🇪 Germany</option>
-                    <option value="France">🇫🇷 France</option>
-                    <option value="Japan">🇯🇵 Japan</option>
-                    <option value="Singapore">🇸🇬 Singapore</option>
-                    <option value="UAE">🇦🇪 UAE</option>
-                  </select>
-                </div>
-                <div class="form-group"><label>State *</label>
-                  <select name="state" id="stateSelect" class="form-control" required data-label="State" onchange="onStateChange()">
-                    <option value="">Select State</option>
-                  </select>
-                </div>
+                <div class="form-group"><label>Country *</label><select name="country" id="countrySelect" class="form-control" required onchange="onCountryChange()"><option value="">Select</option><option value="India" selected>🇮🇳 India</option><option value="United States">🇺🇸 US</option><option value="United Kingdom">🇬🇧 UK</option><option value="Canada">🇨🇦 Canada</option><option value="Australia">🇦🇺 Australia</option></select></div>
+                <div class="form-group"><label>State *</label><select name="state" id="stateSelect" class="form-control" required onchange="onStateChange()"><option value="">Select State</option></select></div>
               </div>
               <div class="grid-2">
-                <div class="form-group"><label>City *</label>
-                  <select name="city" id="citySelect" class="form-control" required data-label="City">
-                    <option value="">Select City</option>
-                  </select>
-                </div>
-                <div class="form-group"><label>ZIP / Pin Code *</label><input type="text" name="pincode" id="pincodeInput" class="form-control" placeholder="110001" required data-label="Pin Code" pattern="\d{5,6}" title="Enter 5-6 digit pincode"></div>
+                <div class="form-group"><label>City *</label><select name="city" id="citySelect" class="form-control" required><option value="">Select City</option></select></div>
+                <div class="form-group"><label>PIN Code *</label><input type="text" name="pincode" class="form-control" placeholder="110001" required pattern="\d{5,6}"></div>
               </div>
-
               <div class="form-group"><label>Payment Method *</label>
                 <div class="radio-group">
                   <label class="radio-option"><input type="radio" name="payment_method" value="Credit / Debit Card" required><span class="material-icons-outlined" style="font-size:16px">credit_card</span><span>Card</span></label>
                   <label class="radio-option"><input type="radio" name="payment_method" value="UPI"><span class="material-icons-outlined" style="font-size:16px">qr_code</span><span>UPI</span></label>
-                  <label class="radio-option"><input type="radio" name="payment_method" value="Net Banking"><span class="material-icons-outlined" style="font-size:16px">account_balance</span><span>Net Banking</span></label>
+                  <label class="radio-option"><input type="radio" name="payment_method" value="Net Banking"><span class="material-icons-outlined" style="font-size:16px">account_balance</span><span>Bank</span></label>
                   <label class="radio-option"><input type="radio" name="payment_method" value="Cash on Delivery"><span class="material-icons-outlined" style="font-size:16px">payments</span><span>COD</span></label>
                 </div>
               </div>
-
-              <div class="checkout-summary">
-                <span class="material-icons-outlined">receipt</span>
-                <div><strong>Order Summary</strong><br><small><%= cartItems.length %> Items</small></div>
-                <div class="summary-amount">₹<%= grandTotal.toFixed(2) %></div>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">
-                <span class="material-icons-outlined" style="font-size:18px">lock</span> Place Order Securely
-              </button>
-              <div class="checkout-security mt-1"><span class="material-icons-outlined" style="font-size:14px">verified_user</span> Your payment information is secure and encrypted</div>
+              <div class="checkout-summary"><span class="material-icons-outlined">receipt</span><div><strong>Order Summary</strong><br><small><%= cartItems.length %> Items</small></div><div class="summary-amount">₹<%= grandTotal.toFixed(2) %></div></div>
+              <button type="submit" class="btn btn-primary btn-block btn-lg mt-2"><span class="material-icons-outlined" style="font-size:18px">lock</span> Place Order Securely</button>
+              <div class="checkout-security mt-1"><span class="material-icons-outlined" style="font-size:14px">verified_user</span> Your payment is secure and encrypted</div>
             </form>
           </div>
         </div>
       </div>
-
       <% } else { %>
       <div class="card card-body text-center" style="padding:48px">
         <span class="material-icons-outlined" style="font-size:48px;color:var(--text-tri)">shopping_cart</span>
         <h3 style="margin:12px 0 4px">Your cart is empty</h3>
-        <p style="color:var(--text-tri);margin-bottom:16px">Browse vendors to add items to your cart.</p>
-        <a href="/user/vendors" class="btn btn-primary">Browse Vendors</a>
+        <p style="color:var(--text-tri);margin-bottom:16px">Browse products to add items to your cart.</p>
+        <a href="/user/view-products" class="btn btn-primary">Start Shopping</a>
       </div>
       <% } %>
     </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+    <div class="app-footer">© 2025 NexCart. All rights reserved.</div>
   </div>
 </div>
-
 <script>
-// State/City Data
-const mapData = {
-  "India": {
-    "Andhra Pradesh": ["Visakhapatnam","Vijayawada","Guntur","Nellore","Kurnool","Tirupati"],
-    "Arunachal Pradesh": ["Itanagar","Naharlagun","Tawang"],
-    "Assam": ["Guwahati","Silchar","Dibrugarh","Jorhat","Nagaon"],
-    "Bihar": ["Patna","Gaya","Bhagalpur","Muzaffarpur","Darbhanga"],
-    "Chhattisgarh": ["Raipur","Bhilai","Bilaspur","Korba","Durg"],
-    "Delhi": ["New Delhi","North Delhi","South Delhi","East Delhi","West Delhi"],
-    "Goa": ["Panaji","Margao","Vasco da Gama","Mapusa"],
-    "Gujarat": ["Ahmedabad","Surat","Vadodara","Rajkot","Bhavnagar","Gandhinagar"],
-    "Haryana": ["Gurugram","Faridabad","Panipat","Ambala","Hisar","Karnal"],
-    "Himachal Pradesh": ["Shimla","Manali","Dharamshala","Mandi","Solan"],
-    "Jharkhand": ["Ranchi","Jamshedpur","Dhanbad","Bokaro","Hazaribagh"],
-    "Karnataka": ["Bengaluru","Mysuru","Hubli","Mangaluru","Belgaum","Shimoga"],
-    "Kerala": ["Thiruvananthapuram","Kochi","Kozhikode","Thrissur","Kollam"],
-    "Madhya Pradesh": ["Bhopal","Indore","Jabalpur","Gwalior","Ujjain"],
-    "Maharashtra": ["Mumbai","Pune","Nagpur","Nashik","Thane","Aurangabad"],
-    "Manipur": ["Imphal","Thoubal","Bishnupur"],
-    "Meghalaya": ["Shillong","Tura","Jowai"],
-    "Mizoram": ["Aizawl","Lunglei","Champhai"],
-    "Nagaland": ["Kohima","Dimapur","Mokokchung"],
-    "Odisha": ["Bhubaneswar","Cuttack","Rourkela","Berhampur","Sambalpur"],
-    "Punjab": ["Chandigarh","Ludhiana","Amritsar","Jalandhar","Patiala"],
-    "Rajasthan": ["Jaipur","Jodhpur","Udaipur","Kota","Ajmer","Bikaner"],
-    "Sikkim": ["Gangtok","Namchi","Pelling"],
-    "Tamil Nadu": ["Chennai","Coimbatore","Madurai","Salem","Tiruchirappalli"],
-    "Telangana": ["Hyderabad","Warangal","Nizamabad","Karimnagar","Khammam"],
-    "Tripura": ["Agartala","Udaipur","Dharmanagar"],
-    "Uttar Pradesh": ["Lucknow","Kanpur","Agra","Varanasi","Noida","Ghaziabad","Prayagraj"],
-    "Uttarakhand": ["Dehradun","Haridwar","Rishikesh","Nainital","Roorkee"],
-    "West Bengal": ["Kolkata","Howrah","Durgapur","Asansol","Siliguri"]
-  },
-  "United States": {
-    "California": ["Los Angeles","San Francisco","San Diego","San Jose"],
-    "New York": ["New York City","Buffalo","Rochester","Albany"],
-    "Texas": ["Houston","Dallas","Austin","San Antonio"],
-    "Florida": ["Miami","Orlando","Tampa","Jacksonville"],
-    "Illinois": ["Chicago","Springfield","Naperville"]
-  },
-  "United Kingdom": {
-    "England": ["London","Manchester","Birmingham","Liverpool","Leeds"],
-    "Scotland": ["Edinburgh","Glasgow","Aberdeen"],
-    "Wales": ["Cardiff","Swansea","Newport"]
-  },
-  "Canada": {
-    "Ontario": ["Toronto","Ottawa","Mississauga","Hamilton"],
-    "British Columbia": ["Vancouver","Victoria","Surrey"],
-    "Quebec": ["Montreal","Quebec City","Laval"],
-    "Alberta": ["Calgary","Edmonton","Red Deer"]
-  },
-  "Australia": {
-    "New South Wales": ["Sydney","Newcastle","Wollongong"],
-    "Victoria": ["Melbourne","Geelong","Ballarat"],
-    "Queensland": ["Brisbane","Gold Coast","Cairns"]
-  },
-  "Germany": {"Bavaria":["Munich","Nuremberg"],"Berlin":["Berlin"],"Hamburg":["Hamburg"],"Hesse":["Frankfurt","Wiesbaden"]},
-  "France": {"Île-de-France":["Paris"],"Provence":["Marseille","Nice"],"Auvergne-Rhône-Alpes":["Lyon"]},
-  "Japan": {"Tokyo":["Tokyo","Shibuya","Shinjuku"],"Osaka":["Osaka","Sakai"],"Kyoto":["Kyoto"]},
-  "Singapore": {"Singapore":["Singapore"]},
-  "UAE": {"Dubai":["Dubai"],"Abu Dhabi":["Abu Dhabi"],"Sharjah":["Sharjah"]}
-};
-
-function openCheckoutModal() {
-  document.getElementById('checkoutModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  onCountryChange(); // populate states
-}
-function closeCheckoutModal() {
-  document.getElementById('checkoutModal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function onCountryChange() {
-  const country = document.getElementById('countrySelect').value;
-  const stateSelect = document.getElementById('stateSelect');
-  const citySelect = document.getElementById('citySelect');
-  stateSelect.innerHTML = '<option value="">Select State</option>';
-  citySelect.innerHTML = '<option value="">Select City</option>';
-  if (country && mapData[country]) {
-    Object.keys(mapData[country]).forEach(state => {
-      stateSelect.innerHTML += `<option value="${state}">${state}</option>`;
-    });
-  }
-}
-
-function onStateChange() {
-  const country = document.getElementById('countrySelect').value;
-  const state = document.getElementById('stateSelect').value;
-  const citySelect = document.getElementById('citySelect');
-  citySelect.innerHTML = '<option value="">Select City</option>';
-  if (country && state && mapData[country] && mapData[country][state]) {
-    mapData[country][state].forEach(city => {
-      citySelect.innerHTML += `<option value="${city}">${city}</option>`;
-    });
-  }
-}
-
-// Close modal on Escape
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCheckoutModal(); });
+const mapData={"India":{"Andhra Pradesh":["Visakhapatnam","Vijayawada","Guntur"],"Bihar":["Patna","Gaya","Bhagalpur"],"Delhi":["New Delhi","South Delhi","East Delhi"],"Gujarat":["Ahmedabad","Surat","Vadodara"],"Karnataka":["Bengaluru","Mysuru","Hubli","Mangaluru"],"Kerala":["Thiruvananthapuram","Kochi","Kozhikode"],"Maharashtra":["Mumbai","Pune","Nagpur","Nashik"],"Punjab":["Chandigarh","Ludhiana","Amritsar"],"Rajasthan":["Jaipur","Jodhpur","Udaipur"],"Tamil Nadu":["Chennai","Coimbatore","Madurai"],"Telangana":["Hyderabad","Warangal"],"Uttar Pradesh":["Lucknow","Kanpur","Agra","Noida"],"West Bengal":["Kolkata","Howrah","Durgapur"]},"United States":{"California":["Los Angeles","San Francisco","San Diego"],"New York":["New York City","Buffalo"],"Texas":["Houston","Dallas","Austin"]},"United Kingdom":{"England":["London","Manchester","Birmingham"],"Scotland":["Edinburgh","Glasgow"]},"Canada":{"Ontario":["Toronto","Ottawa"],"British Columbia":["Vancouver","Victoria"]},"Australia":{"New South Wales":["Sydney","Newcastle"],"Victoria":["Melbourne","Geelong"]}};
+function openCheckoutModal(){document.getElementById('checkoutModal').style.display='flex';document.body.style.overflow='hidden';onCountryChange();}
+function closeCheckoutModal(){document.getElementById('checkoutModal').style.display='none';document.body.style.overflow='';}
+function onCountryChange(){const c=document.getElementById('countrySelect').value,s=document.getElementById('stateSelect'),ci=document.getElementById('citySelect');s.innerHTML='<option value="">Select State</option>';ci.innerHTML='<option value="">Select City</option>';if(c&&mapData[c])Object.keys(mapData[c]).forEach(st=>s.innerHTML+=`<option value="${st}">${st}</option>`);}
+function onStateChange(){const c=document.getElementById('countrySelect').value,s=document.getElementById('stateSelect').value,ci=document.getElementById('citySelect');ci.innerHTML='<option value="">Select City</option>';if(c&&s&&mapData[c]&&mapData[c][s])mapData[c][s].forEach(city=>ci.innerHTML+=`<option value="${city}">${city}</option>`);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCheckoutModal();});
 </script>
 <%- include('../partials/footer') %>

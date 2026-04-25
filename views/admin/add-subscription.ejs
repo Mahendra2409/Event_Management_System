@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <div class="page-header"><h1>Add <%= type %> Subscription</h1></div>
+  <div class="card" style="max-width:560px"><div class="card-body">
+    <form action="/admin/subscription/add/<%= type %>" method="POST" data-validate>
+      <div class="form-group"><label>Name *</label><input type="text" name="member_name" class="form-control" required></div>
+      <div class="form-group"><label>Email *</label><input type="email" name="member_email" class="form-control" required></div>
+      <div class="form-group"><label>Phone *</label><input type="text" name="member_phone" class="form-control" required pattern="\d{10,15}"></div>
+      <div class="grid-2">
+        <div class="form-group"><label>Duration *</label><select name="duration" class="form-control" required><option value="6 months">6 Months</option><option value="1 year" selected>1 Year</option><option value="2 years">2 Years</option></select></div>
+        <div class="form-group"><label>Start Date *</label><input type="date" name="start_date" class="form-control" required></div>
+      </div>
+      <div class="btn-row mt-2"><a href="/admin/maintain-<%= type === 'seller' ? 'seller' : 'user' %>" class="btn btn-outline">Cancel</a><button type="submit" class="btn btn-primary">Add Subscription</button></div>
+    </form>
+  </div></div>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
+<%- include('../partials/footer') %>

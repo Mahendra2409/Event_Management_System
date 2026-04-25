@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1><%= product.name %></h1><div class="breadcrumb"><a href="/user">Home</a> / <a href="/user/view-products">Shop</a> / <%= product.name %></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+        <div><div style="border-radius:var(--radius);overflow:hidden;background:var(--muted);aspect-ratio:1"><img src="/uploads/<%= product.image %>" alt="<%= product.name %>" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div></div>
+        <div>
+          <% if (product.category_name) { %><span class="category-pill active" style="margin-bottom:12px;display:inline-block"><%= product.category_name %></span><% } %>
+          <h2 style="font-size:24px;font-weight:700;margin-bottom:8px"><%= product.name %></h2>
+          <p style="color:var(--text-sec);margin-bottom:4px">by <a href="/user/shops/<%= product.seller_id %>/products" style="color:var(--primary);font-weight:600"><%= product.seller_name %></a></p>
+          <% if (product.rating > 0) { %><div class="stars" style="margin:8px 0"><% for(let i=1;i<=5;i++){%><span class="material-icons-outlined<%= i > Math.round(product.rating) ? ' empty' : '' %>">star</span><%}%><span style="color:var(--text-tri);font-size:13px;margin-left:6px"><%= product.rating %> (<%= product.reviews_count %> reviews)</span></div><% } %>
+          <div style="margin:16px 0">
+            <span style="font-size:32px;font-weight:800;color:var(--primary)">₹<%= (product.discount_price || product.price).toFixed(2) %></span>
+            <% if (product.discount_price) { %><span style="font-size:18px;text-decoration:line-through;color:var(--text-tri);margin-left:10px">₹<%= product.price.toFixed(2) %></span><span style="color:var(--success);font-weight:700;margin-left:8px;font-size:14px"><%= Math.round((1 - product.discount_price/product.price) * 100) %>% OFF</span><% } %>
+          </div>
+          <% if (product.description) { %><p style="color:var(--text-sec);line-height:1.7;margin-bottom:16px"><%= product.description %></p><% } %>
+          <p style="font-size:13px;margin-bottom:20px"><span class="material-icons-outlined" style="font-size:16px;color:<%= product.stock > 0 ? 'var(--success)' : 'var(--danger)' %>"><%= product.stock > 0 ? 'check_circle' : 'error' %></span> <%= product.stock > 0 ? 'In Stock (' + product.stock + ' available)' : 'Out of Stock' %></p>
+          <div style="display:flex;gap:10px">
+            <form action="/user/cart/add" method="POST" style="flex:1"><input type="hidden" name="product_id" value="<%= product.id %>"><input type="hidden" name="quantity" value="1"><button type="submit" class="btn btn-primary btn-lg btn-block" <%= product.stock <= 0 ? 'disabled' : '' %>><span class="material-icons-outlined" style="font-size:18px">add_shopping_cart</span> Add to Cart</button></form>
+            <form action="/user/wishlist/toggle" method="POST"><input type="hidden" name="product_id" value="<%= product.id %>"><button type="submit" class="btn btn-outline btn-lg" style="<%= inWishlist ? 'color:var(--coral);border-color:var(--coral)' : '' %>"><span class="material-icons-outlined"><%= inWishlist ? 'favorite' : 'favorite_border' %></span></button></form>
+          </div>
+          <div style="margin-top:20px;padding:16px;background:var(--muted);border-radius:var(--radius-sm);display:flex;gap:20px;font-size:12px;color:var(--text-sec)">
+            <span><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle">local_shipping</span> Free Delivery</span>
+            <span><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle">autorenew</span> 30-Day Returns</span>
+            <span><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle">verified_user</span> Secure Payment</span>
+          </div>
+        </div>
+      </div>
+      <!-- Reviews -->
+      <div class="section-card mt-4">
+        <h3>Customer Reviews (<%= reviews.length %>)</h3>
+        <form action="/user/product/<%= product.id %>/review" method="POST" style="margin-bottom:20px;padding:16px;background:var(--muted);border-radius:var(--radius-sm)">
+          <div class="form-group"><label>Your Rating *</label><div class="star-input"><% for(let i=5;i>=1;i--){%><input type="radio" name="rating" value="<%=i%>" id="star<%=i%>"><label for="star<%=i%>">⭐</label><%}%></div></div>
+          <div class="form-group"><label>Your Review</label><textarea name="comment" class="form-control" rows="3" placeholder="Share your experience..."></textarea></div>
+          <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+        </form>
+        <% if (reviews.length > 0) { reviews.forEach(r => { %>
+          <div style="padding:14px 0;border-bottom:1px solid var(--border-lt)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px"><%= r.user_name.charAt(0).toUpperCase() %></div>
+              <strong style="font-size:13px"><%= r.user_name %></strong>
+              <div class="stars"><% for(let i=1;i<=5;i++){%><span class="material-icons-outlined<%= i > r.rating ? ' empty' : '' %>" style="font-size:14px">star</span><%}%></div>
+              <small style="color:var(--text-tri);margin-left:auto"><%= new Date(r.created_at).toLocaleDateString() %></small>
+            </div>
+            <% if (r.comment) { %><p style="font-size:13px;color:var(--text-sec)"><%= r.comment %></p><% } %>
+          </div>
+        <% }) } else { %><p style="color:var(--text-tri);font-size:13px">No reviews yet. Be the first to review!</p><% } %>
+      </div>
+      <% if (relatedProducts && relatedProducts.length > 0) { %>
+      <div class="section-card mt-3"><h3>Related Products</h3>
+        <div class="products-grid"><% relatedProducts.forEach(p => { %>
+          <div class="product-card"><div class="product-img"><img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.style.display='none'"></div><div class="product-body"><a href="/user/product/<%= p.id %>"><h4><%= p.name %></h4></a><small><%= p.seller_name %></small><div class="product-footer"><span class="product-price">₹<%= (p.discount_price || p.price).toFixed(2) %></span><form action="/user/cart/add" method="POST"><input type="hidden" name="product_id" value="<%= p.id %>"><input type="hidden" name="quantity" value="1"><button type="submit" class="btn btn-sm btn-primary"><span class="material-icons-outlined" style="font-size:14px">add_shopping_cart</span></button></form></div></div></div>
+        <% }) %></div>
+      </div>
+      <% } %>
+    </div>
+    <div class="app-footer">© 2025 NexCart. All rights reserved.</div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

@@ -1,26 +1,23 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-vendor') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-      <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
-      <div class="page-header"><h1>Update Product</h1><p>Edit product details</p></div>
-      <div class="card" style="max-width:500px">
-        <div class="card-header"><h2><%= product.name %></h2></div>
-        <div class="card-body">
-          <div style="text-align:center;margin-bottom:16px"><div style="width:120px;height:120px;border-radius:12px;overflow:hidden;background:var(--muted);margin:0 auto"><img src="/uploads/<%= product.image %>" style="width:100%;height:100%;object-fit:cover" onerror="this.src=''"></div></div>
-          <form action="/vendor/update-item/<%= product.id %>" method="POST" enctype="multipart/form-data" data-validate>
-            <div class="form-group"><label>Product Name *</label><input type="text" name="name" class="form-control" value="<%= product.name %>" required data-label="Product Name"></div>
-            <div class="form-group"><label>Price *</label><input type="number" name="price" class="form-control" value="<%= product.price %>" step="0.01" required data-label="Price"></div>
-            <div class="form-group"><label>New Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
-            <div class="btn-row"><a href="/vendor/add-item" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary">Update Product</button></div>
-          </form>
-        </div>
+<div class="app-layout"><%- include('../partials/sidebar-vendor') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <div class="page-header"><h1>Update Product</h1></div>
+  <div class="card"><div class="card-body">
+    <form action="/seller/update-item/<%= product.id %>" method="POST" enctype="multipart/form-data" data-validate>
+      <div class="form-group"><label>Product Name *</label><input type="text" name="name" class="form-control" value="<%= product.name %>" required></div>
+      <div class="grid-2">
+        <div class="form-group"><label>Price (₹) *</label><input type="number" name="price" class="form-control" value="<%= product.price %>" step="0.01" required></div>
+        <div class="form-group"><label>Discount Price (₹)</label><input type="number" name="discount_price" class="form-control" value="<%= product.discount_price || '' %>" step="0.01"></div>
       </div>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
-  </div>
-</div>
+      <div class="grid-2">
+        <div class="form-group"><label>Category</label><select name="category_id" class="form-control"><option value="">Select</option><% if (typeof categories !== 'undefined') { categories.forEach(c => { %><option value="<%= c.id %>" <%= product.category_id == c.id ? 'selected' : '' %>><%= c.name %></option><% }) } %></select></div>
+        <div class="form-group"><label>Stock</label><input type="number" name="stock" class="form-control" value="<%= product.stock %>"></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea name="description" class="form-control" rows="3"><%= product.description || '' %></textarea></div>
+      <div class="form-group"><label>Product Image</label><input type="file" name="image" class="form-control" accept="image/*"><% if (product.image && product.image !== 'default.png') { %><div style="margin-top:8px"><img src="/uploads/<%= product.image %>" style="width:80px;height:80px;object-fit:cover;border-radius:8px"></div><% } %></div>
+      <div class="btn-row mt-2"><a href="/seller/add-item" class="btn btn-outline">Cancel</a><button type="submit" class="btn btn-primary">Update Product</button></div>
+    </form>
+  </div></div>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

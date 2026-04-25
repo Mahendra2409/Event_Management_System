@@ -1,33 +1,25 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-admin') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-      <div class="page-header"><h1>Admin Dashboard</h1><p>Welcome, <%= user.name %>. Manage the system from here.</p></div>
-
-      <div class="stat-cards">
-        <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">people</span></div><div><div class="stat-num"><%= userCount %></div><div class="stat-label">Total Users</div></div></div>
-        <div class="stat-card"><div class="stat-card-icon blue"><span class="material-icons-outlined">storefront</span></div><div><div class="stat-num"><%= vendorCount %></div><div class="stat-label">Total Vendors</div></div></div>
-        <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">card_membership</span></div><div><div class="stat-num"><%= membershipCount %></div><div class="stat-label">Memberships</div></div></div>
-        <div class="stat-card"><div class="stat-card-icon orange"><span class="material-icons-outlined">receipt_long</span></div><div><div class="stat-num"><%= orderCount %></div><div class="stat-label">Total Orders</div></div></div>
-      </div>
-
-      <div class="dashboard-grid">
-        <a href="/admin/maintain-user" class="dash-card">
-          <div class="dash-card-icon"><span class="material-icons-outlined">people</span></div>
-          <div><h3>Maintain User</h3><p>Manage users, memberships, add or update user accounts.</p></div>
-          <span class="material-icons-outlined arrow">arrow_forward</span>
-        </a>
-        <a href="/admin/maintain-vendor" class="dash-card">
-          <div class="dash-card-icon"><span class="material-icons-outlined">storefront</span></div>
-          <div><h3>Maintain Vendor</h3><p>Manage vendors, memberships, add or update vendor accounts.</p></div>
-          <span class="material-icons-outlined arrow">arrow_forward</span>
-        </a>
-      </div>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <div class="page-header"><h1>Admin Dashboard</h1><p>Welcome, <%= user.name %>. Platform overview at a glance.</p></div>
+  <div class="stat-cards">
+    <div class="stat-card"><div class="stat-card-icon purple"><span class="material-icons-outlined">people</span></div><div><div class="stat-num"><%= userCount %></div><div class="stat-label">Customers</div></div></div>
+    <div class="stat-card"><div class="stat-card-icon blue"><span class="material-icons-outlined">storefront</span></div><div><div class="stat-num"><%= sellerCount %></div><div class="stat-label">Sellers</div></div></div>
+    <div class="stat-card"><div class="stat-card-icon green"><span class="material-icons-outlined">inventory_2</span></div><div><div class="stat-num"><%= productCount %></div><div class="stat-label">Products</div></div></div>
+    <div class="stat-card"><div class="stat-card-icon orange"><span class="material-icons-outlined">payments</span></div><div><div class="stat-num">₹<%= totalRevenue.toFixed(0) %></div><div class="stat-label">Revenue</div></div></div>
   </div>
-</div>
+  <div class="dashboard-grid">
+    <a href="/admin/maintain-user" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">people</span></div><div><h3>Manage Users</h3><p>Add, update, delete customers.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+    <a href="/admin/maintain-seller" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">storefront</span></div><div><h3>Manage Sellers</h3><p>Add, update, delete sellers.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+    <a href="/admin/categories" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">category</span></div><div><h3>Categories</h3><p>Manage product categories.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+    <a href="/admin/orders" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">receipt_long</span></div><div><h3>All Orders</h3><p>View platform-wide orders.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+  </div>
+  <% if (recentOrders && recentOrders.length > 0) { %>
+  <div class="section-card"><h3>Recent Orders</h3>
+    <div class="table-container" style="border:none"><table><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>
+      <% recentOrders.forEach(o => { %><tr><td>#<%= o.id %></td><td><%= o.customer_name %></td><td>₹<%= o.total_amount.toFixed(2) %></td><td><span class="status-badge <%= o.status === 'Delivered' ? 'status-delivered' : o.status === 'Shipped' ? 'status-shipped' : 'status-processing' %>"><%= o.status %></span></td><td><%= new Date(o.created_at).toLocaleDateString() %></td></tr><% }) %>
+    </tbody></table></div>
+  </div>
+  <% } %>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

@@ -16,16 +16,15 @@
           <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value"><%= orderDetails.number %></span></div>
           <div class="detail-row"><span class="detail-label">Address</span><span class="detail-value"><%= orderDetails.address %>, <%= orderDetails.city %>, <%= orderDetails.state %></span></div>
           <div class="detail-row"><span class="detail-label">Payment</span><span class="detail-value"><%= orderDetails.payment_method %></span></div>
-          <div class="detail-row"><span class="detail-label">Pin Code</span><span class="detail-value"><%= orderDetails.pincode %></span></div>
-          <div class="detail-row" style="border-bottom:none"><span class="detail-label">Total Amount</span><span class="detail-value" style="color:var(--primary);font-size:18px">₹<%= totalAmount.toFixed(2) %></span></div>
+          <div class="detail-row" style="border-bottom:none"><span class="detail-label">Total</span><span class="detail-value" style="color:var(--primary);font-size:18px">₹<%= totalAmount.toFixed(2) %></span></div>
           <div style="margin-top:20px;display:flex;gap:8px">
-            <a href="/user/order-status" class="btn btn-outline" style="flex:1"><span class="material-icons-outlined" style="font-size:16px">receipt_long</span> Track Order</a>
-            <a href="/user/vendors" class="btn btn-primary" style="flex:1"><span class="material-icons-outlined" style="font-size:16px">shopping_bag</span> Continue Shopping</a>
+            <a href="/user/order-status" class="btn btn-outline" style="flex:1"><span class="material-icons-outlined" style="font-size:16px">local_shipping</span> Track Order</a>
+            <a href="/user/view-products" class="btn btn-primary" style="flex:1"><span class="material-icons-outlined" style="font-size:16px">shopping_bag</span> Continue Shopping</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+    <div class="app-footer">© 2025 NexCart. All rights reserved.</div>
   </div>
 </div>
 <%- include('../partials/footer') %>

@@ -1,37 +1,90 @@
 <%- include('partials/header') %>
 <nav class="navbar">
-  <a href="/" class="navbar-brand"><span class="material-icons-outlined" style="font-size:24px;color:var(--primary)">event</span> <span>EMS</span> Event Management</a>
+  <a href="/" class="navbar-brand"><span class="material-icons-outlined">shopping_bag</span> <span>NexCart</span></a>
   <div class="navbar-links">
     <a href="/login" class="nav-link">Login</a>
-    <a href="/signup/user" class="nav-link">Sign Up</a>
+    <a href="/signup/user" class="nav-link primary">Sign Up Free</a>
   </div>
 </nav>
+
 <div class="hero">
-  <h1>Welcome to <span>Event Management System</span></h1>
-  <p>Manage your events seamlessly. Browse vendors, manage orders, track deliveries, and create unforgettable experiences.</p>
+  <h1>Shop the <span>Future</span>, Today</h1>
+  <p>Discover amazing products from trusted sellers. Electronics, Fashion, Home & Kitchen, Beauty, and more — all in one place.</p>
   <div class="hero-buttons">
-    <a href="/login" class="btn btn-primary btn-lg"><span class="material-icons-outlined" style="font-size:18px">login</span> Login</a>
-    <a href="/signup/user" class="btn btn-outline btn-lg"><span class="material-icons-outlined" style="font-size:18px">person_add</span> Sign Up</a>
+    <a href="/signup/user" class="btn btn-primary btn-lg"><span class="material-icons-outlined" style="font-size:18px">rocket_launch</span> Start Shopping</a>
+    <a href="/login/seller" class="btn btn-outline btn-lg"><span class="material-icons-outlined" style="font-size:18px">storefront</span> Become a Seller</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">10K+</div><div class="label">Products</div></div>
+    <div class="hero-stat"><div class="num">500+</div><div class="label">Sellers</div></div>
+    <div class="hero-stat"><div class="num">50K+</div><div class="label">Happy Customers</div></div>
+    <div class="hero-stat"><div class="num">99%</div><div class="label">Satisfaction</div></div>
   </div>
 </div>
-<div class="main-container">
-  <div class="dashboard-grid" style="max-width:800px;margin:0 auto">
-    <a href="/login/user" class="dash-card">
-      <div class="dash-card-icon"><span class="material-icons-outlined">person</span></div>
-      <div><h3>User Portal</h3><p>Browse vendors, manage cart, track orders.</p></div>
-      <span class="material-icons-outlined arrow">arrow_forward</span>
-    </a>
-    <a href="/login/vendor" class="dash-card">
-      <div class="dash-card-icon"><span class="material-icons-outlined">storefront</span></div>
-      <div><h3>Vendor Portal</h3><p>Manage products, receive orders, track sales.</p></div>
-      <span class="material-icons-outlined arrow">arrow_forward</span>
-    </a>
-    <a href="/login/admin" class="dash-card">
-      <div class="dash-card-icon"><span class="material-icons-outlined">admin_panel_settings</span></div>
-      <div><h3>Admin Portal</h3><p>Manage users, vendors, and memberships.</p></div>
-      <span class="material-icons-outlined arrow">arrow_forward</span>
-    </a>
+
+<div style="padding:48px 0">
+  <div class="section-title"><h2>Shop by Category</h2><p>Find exactly what you're looking for</p></div>
+  <div class="categories-grid">
+    <a href="/login/user" class="category-card"><span class="icon">💻</span><h3>Electronics</h3><p>Gadgets & Tech</p></a>
+    <a href="/login/user" class="category-card"><span class="icon">👗</span><h3>Fashion</h3><p>Clothing & Shoes</p></a>
+    <a href="/login/user" class="category-card"><span class="icon">🏠</span><h3>Home & Kitchen</h3><p>Furniture & Decor</p></a>
+    <a href="/login/user" class="category-card"><span class="icon">💄</span><h3>Beauty</h3><p>Skincare & Makeup</p></a>
+    <a href="/login/user" class="category-card"><span class="icon">⚽</span><h3>Sports</h3><p>Fitness & Outdoors</p></a>
+    <a href="/login/user" class="category-card"><span class="icon">📚</span><h3>Books</h3><p>Knowledge & Stories</p></a>
   </div>
 </div>
-<div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+
+<% if (typeof featuredProducts !== 'undefined' && featuredProducts.length > 0) { %>
+<div class="featured-section">
+  <div class="section-title"><h2>Featured Products</h2><p>Hand-picked items just for you</p></div>
+  <div class="products-grid">
+    <% featuredProducts.forEach(p => { %>
+    <div class="product-card">
+      <div class="product-img">
+        <img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.style.display='none'">
+        <% if (p.discount_price) { %><span class="product-badge sale"><%= Math.round((1 - p.discount_price/p.price) * 100) %>% OFF</span><% } %>
+      </div>
+      <div class="product-body">
+        <h4><%= p.name %></h4>
+        <small><%= p.seller_name %> • <%= p.category_name || '' %></small>
+        <div class="product-footer">
+          <span class="product-price">₹<%= (p.discount_price || p.price).toFixed(2) %>
+            <% if (p.discount_price) { %><span class="original">₹<%= p.price.toFixed(2) %></span><% } %>
+          </span>
+          <a href="/login/user" class="btn btn-sm btn-primary"><span class="material-icons-outlined" style="font-size:14px">add_shopping_cart</span></a>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
+<% } %>
+
+<div class="trust-section">
+  <div class="trust-grid">
+    <div class="trust-item"><span class="material-icons-outlined">local_shipping</span><h4>Free Delivery</h4><p>On orders over ₹499</p></div>
+    <div class="trust-item"><span class="material-icons-outlined">verified_user</span><h4>Secure Payments</h4><p>256-bit SSL encryption</p></div>
+    <div class="trust-item"><span class="material-icons-outlined">autorenew</span><h4>Easy Returns</h4><p>30-day return policy</p></div>
+    <div class="trust-item"><span class="material-icons-outlined">support_agent</span><h4>24/7 Support</h4><p>Dedicated customer care</p></div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>Ready to Start Selling?</h2>
+  <p>Join thousands of sellers growing their business on NexCart</p>
+  <a href="/signup/seller" class="btn"><span class="material-icons-outlined" style="font-size:18px">storefront</span> Become a Seller</a>
+</div>
+
+<footer class="landing-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <strong>NexCart</strong>
+      <p>Your one-stop destination for everything. Shop smart, shop NexCart. Quality products from trusted sellers delivered to your doorstep.</p>
+    </div>
+    <div class="footer-col"><h4>Shop</h4><a href="/login/user">Electronics</a><a href="/login/user">Fashion</a><a href="/login/user">Home & Kitchen</a><a href="/login/user">Beauty</a></div>
+    <div class="footer-col"><h4>Account</h4><a href="/login">Login</a><a href="/signup/user">Sign Up</a><a href="/login/seller">Seller Login</a><a href="/signup/seller">Become a Seller</a></div>
+    <div class="footer-col"><h4>Help</h4><a href="#">Contact Us</a><a href="#">FAQ</a><a href="#">Shipping Info</a><a href="#">Returns</a></div>
+  </div>
+  <div class="footer-bottom">© 2025 NexCart. All rights reserved. Built with ❤️ for the best shopping experience.</div>
+</footer>
 <%- include('partials/footer') %>

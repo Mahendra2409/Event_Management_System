@@ -1,29 +1,12 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-admin') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-      <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
-      <div class="page-header"><h1>Maintain User</h1><p>Manage user memberships and accounts</p></div>
-
-      <div class="maintenance-section">
-        <h3><span class="material-icons-outlined">card_membership</span> Membership Management</h3>
-        <div class="maintenance-actions">
-          <a href="/admin/membership/add/user" class="btn btn-primary"><span class="material-icons-outlined" style="font-size:16px">add</span> Add Membership</a>
-          <a href="/admin/membership/update/user" class="btn btn-outline"><span class="material-icons-outlined" style="font-size:16px">edit</span> Update Membership</a>
-        </div>
-      </div>
-      <div class="maintenance-section">
-        <h3><span class="material-icons-outlined">people</span> User Management</h3>
-        <div class="maintenance-actions">
-          <a href="/admin/manage/add/user" class="btn btn-success"><span class="material-icons-outlined" style="font-size:16px">person_add</span> Add User</a>
-          <a href="/admin/manage/update/user" class="btn btn-warning"><span class="material-icons-outlined" style="font-size:16px">manage_accounts</span> Update / Delete User</a>
-        </div>
-      </div>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <div class="page-header"><h1>Manage Users</h1><p>Add, update, or manage customer accounts and subscriptions.</p></div>
+  <div class="dashboard-grid">
+    <a href="/admin/manage/add/user" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">person_add</span></div><div><h3>Add User</h3><p>Create a new customer account.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+    <a href="/admin/manage/update/user" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">edit</span></div><div><h3>Update User</h3><p>Edit or delete user accounts.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+    <a href="/admin/subscription/add/user" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">card_membership</span></div><div><h3>Add Subscription</h3><p>Create a premium subscription.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
+    <a href="/admin/subscription/update/user" class="dash-card"><div class="dash-card-icon"><span class="material-icons-outlined">sync</span></div><div><h3>Update Subscription</h3><p>Extend or cancel subscriptions.</p></div><span class="material-icons-outlined arrow">arrow_forward</span></a>
   </div>
-</div>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

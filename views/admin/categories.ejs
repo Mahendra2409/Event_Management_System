@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <div class="page-header"><h1>Categories</h1><p>Manage product categories</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div class="card"><div class="card-header"><h2>Add Category</h2></div><div class="card-body">
+      <form action="/admin/categories/add" method="POST" data-validate>
+        <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control" placeholder="e.g. Electronics" required></div>
+        <div class="form-group"><label>Icon (emoji)</label><input type="text" name="icon" class="form-control" placeholder="💻"></div>
+        <div class="form-group"><label>Description</label><textarea name="description" class="form-control" rows="2" placeholder="Optional description"></textarea></div>
+        <button type="submit" class="btn btn-primary btn-block mt-2">Add Category</button>
+      </form>
+    </div></div>
+    <div class="section-card">
+      <h3>Existing Categories (<%= categories.length %>)</h3>
+      <% categories.forEach(c => { %>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-lt)">
+        <div><strong><%= c.icon || '📦' %> <%= c.name %></strong><% if (c.description) { %><br><small style="color:var(--text-tri)"><%= c.description %></small><% } %></div>
+        <form action="/admin/categories/delete/<%= c.id %>" method="POST"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')"><span class="material-icons-outlined" style="font-size:14px">delete</span></button></form>
+      </div>
+      <% }) %>
+      <% if (categories.length === 0) { %><p style="color:var(--text-tri)">No categories yet.</p><% } %>
+    </div>
+  </div>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
+<%- include('../partials/footer') %>

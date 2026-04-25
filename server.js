@@ -1,11 +1,22 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const multer = require('multer');
+const compression = require('compression');
+const helmet = require('helmet');
 const db = require('./database');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const SITE_NAME = process.env.SITE_NAME || 'NexCart';
+
+// Security & performance
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
+app.use(compression());
 
 // View engine
 app.set('view engine', 'ejs');
@@ -19,20 +30,22 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Session
 app.use(session({
-  secret: 'ems_secret_key_2024_secure',
+  secret: process.env.SESSION_SECRET || 'nexcart_secret_2025',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 2, // 2 hours
+    maxAge: 1000 * 60 * 60 * 24, // 24 hours
     httpOnly: true
   }
 }));
 
-// Make session data available in all templates
+// Global template variables
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.success = req.session.success || null;
   res.locals.error = req.session.error || null;
+  res.locals.siteName = SITE_NAME;
+  res.locals.currency = process.env.CURRENCY_SYMBOL || '₹';
   delete req.session.success;
   delete req.session.error;
   next();
@@ -48,23 +61,34 @@ const storage = multer.diskStorage({
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    if (ext && mime) return cb(null, true);
+    cb(new Error('Only image files are allowed'));
+  }
+});
 app.locals.upload = upload;
 
 // Routes
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
-const vendorRoutes = require('./routes/vendor');
+const sellerRoutes = require('./routes/vendor');
 const userRoutes = require('./routes/user');
 
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
-app.use('/vendor', vendorRoutes);
+app.use('/seller', sellerRoutes);
+app.use('/vendor', sellerRoutes); // backward compat
 app.use('/user', userRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).render('404', { title: '404 - Not Found' });
+  res.status(404).render('404', { title: '404 - Page Not Found' });
 });
 
 // Error handler
@@ -74,7 +98,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Event Management System running at http://localhost:${PORT}`);
+  console.log(`🛒 ${SITE_NAME} running at http://localhost:${PORT}`);
 });
 
 module.exports = app;

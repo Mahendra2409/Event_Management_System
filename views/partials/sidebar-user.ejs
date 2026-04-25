@@ -1,14 +1,17 @@
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <span class="material-icons-outlined">event</span>
-    <div><strong>EMS</strong><span>Event Management</span></div>
+    <span class="material-icons-outlined">shopping_bag</span>
+    <div><strong>NexCart</strong><span>E-Commerce</span></div>
   </div>
   <nav class="sidebar-nav">
     <a href="/user" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
       <span class="material-icons-outlined">home</span> Home
     </a>
-    <a href="/user/vendors" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'vendors' ? ' active' : '' %>">
-      <span class="material-icons-outlined">storefront</span> Vendor
+    <a href="/user/view-products" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'view-product' ? ' active' : '' %>">
+      <span class="material-icons-outlined">grid_view</span> Shop
+    </a>
+    <a href="/user/shops" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'shops' ? ' active' : '' %>">
+      <span class="material-icons-outlined">storefront</span> Sellers
     </a>
     <a href="/user/cart" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'cart' ? ' active' : '' %>">
       <span class="material-icons-outlined">shopping_cart</span> Cart
@@ -16,20 +19,20 @@
         <span class="sidebar-badge"><%= cartCount %></span>
       <% } %>
     </a>
-    <a href="/user/guest-list" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'guest-list' ? ' active' : '' %>">
-      <span class="material-icons-outlined">group</span> Guest List
+    <a href="/user/wishlist" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'wishlist' ? ' active' : '' %>">
+      <span class="material-icons-outlined">favorite_border</span> Wishlist
+      <% if (typeof wishlistCount !== 'undefined' && wishlistCount > 0) { %>
+        <span class="sidebar-badge"><%= wishlistCount %></span>
+      <% } %>
     </a>
     <a href="/user/order-status" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'order-status' ? ' active' : '' %>">
-      <span class="material-icons-outlined">receipt_long</span> Order Status
+      <span class="material-icons-outlined">local_shipping</span> My Orders
     </a>
     <a href="/user/product-status" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'product-status' ? ' active' : '' %>">
-      <span class="material-icons-outlined">inventory</span> Product Status
+      <span class="material-icons-outlined">inventory</span> Tracking
     </a>
-    <a href="/user/request-items" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'request-items' ? ' active' : '' %>">
-      <span class="material-icons-outlined">description</span> Request Item
-    </a>
-    <a href="/user/vendors" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'view-product' ? ' active' : '' %>">
-      <span class="material-icons-outlined">visibility</span> View Product
+    <a href="/user/inquiries" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'inquiries' ? ' active' : '' %>">
+      <span class="material-icons-outlined">help_outline</span> Inquiries
     </a>
     <div class="sidebar-divider"></div>
     <a href="/logout" class="sidebar-link sidebar-logout">

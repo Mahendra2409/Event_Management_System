@@ -1,0 +1,10 @@
+<%- include('../partials/header') %>
+<div class="app-layout"><%- include('../partials/sidebar-vendor') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <div class="page-header"><h1>Customer Inquiries</h1></div>
+  <% if (inquiries && inquiries.length > 0) { %>
+  <div class="table-container"><table><thead><tr><th>Customer</th><th>Product</th><th>Message</th><th>Status</th><th>Date</th></tr></thead><tbody>
+    <% inquiries.forEach(i => { %><tr><td><%= i.user_name %></td><td><%= i.product_name || '-' %></td><td><%= i.message || '-' %></td><td><span class="status-badge status-processing"><%= i.status %></span></td><td><%= new Date(i.created_at).toLocaleDateString() %></td></tr><% }) %>
+  </tbody></table></div>
+  <% } else { %><div class="card card-body text-center" style="padding:48px"><h3>No inquiries</h3></div><% } %>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
+<%- include('../partials/footer') %>

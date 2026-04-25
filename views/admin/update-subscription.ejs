@@ -1,0 +1,32 @@
+<%- include('../partials/header') %>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <div class="page-header"><h1>Update <%= type %> Subscription</h1></div>
+  <div class="card" style="max-width:560px"><div class="card-body">
+    <% if (!subscription) { %>
+    <form action="/admin/subscription/lookup/<%= type %>" method="POST" data-validate>
+      <div class="form-group"><label>Subscription ID *</label><input type="number" name="subscription_id" class="form-control" required></div>
+      <button type="submit" class="btn btn-primary">Look Up</button>
+    </form>
+    <% } else { %>
+    <div style="margin-bottom:20px;padding:16px;background:var(--muted);border-radius:var(--radius-sm)">
+      <p><strong>ID:</strong> #<%= subscription.id %></p>
+      <p><strong>Name:</strong> <%= subscription.member_name %></p>
+      <p><strong>Email:</strong> <%= subscription.member_email %></p>
+      <p><strong>Duration:</strong> <%= subscription.duration %></p>
+      <p><strong>Period:</strong> <%= subscription.start_date %> — <%= subscription.end_date %></p>
+      <p><strong>Status:</strong> <span class="status-badge <%= subscription.status === 'active' ? 'status-active' : 'status-cancelled' %>"><%= subscription.status %></span></p>
+    </div>
+    <form action="/admin/subscription/update/<%= type %>" method="POST">
+      <input type="hidden" name="subscription_id" value="<%= subscription.id %>">
+      <div class="form-group"><label>Extend Duration</label><select name="extension_duration" class="form-control"><option value="6 months">6 Months</option><option value="1 year">1 Year</option><option value="2 years">2 Years</option></select></div>
+      <div class="btn-row">
+        <button type="submit" name="action" value="extend" class="btn btn-primary">Extend</button>
+        <button type="submit" name="action" value="cancel" class="btn btn-danger" onclick="return confirm('Cancel subscription?')">Cancel Subscription</button>
+      </div>
+    </form>
+    <% } %>
+  </div></div>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
+<%- include('../partials/footer') %>

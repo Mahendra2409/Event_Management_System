@@ -1,7 +1,8 @@
 <%- include('partials/header') %>
-<div class="error-page">
-  <h1>Error</h1>
-  <p><%= typeof message !== 'undefined' ? message : 'Something went wrong. Please try again.' %></p>
-  <a href="/" class="btn btn-primary btn-lg">Back to Home</a>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center">
+  <span class="material-icons-outlined" style="font-size:80px;color:var(--danger);margin-bottom:16px">error_outline</span>
+  <h1 style="font-size:32px;font-weight:800;color:var(--text);margin-bottom:8px">Something went wrong</h1>
+  <p style="font-size:14px;color:var(--text-sec);margin-bottom:24px"><%= typeof error !== 'undefined' ? error : 'An unexpected error occurred.' %></p>
+  <a href="/" class="btn btn-primary btn-lg"><span class="material-icons-outlined" style="font-size:18px">home</span> Back to Home</a>
 </div>
 <%- include('partials/footer') %>

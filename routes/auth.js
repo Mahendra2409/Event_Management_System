@@ -3,23 +3,43 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('../database');
 
-// Index / Landing Page
+// Landing Page
 router.get('/', (req, res) => {
-  res.render('index', { title: 'Event Management System' });
+  // Fetch featured products and categories for landing page
+  const categories = db.prepare('SELECT * FROM categories ORDER BY sort_order').all();
+  const featuredProducts = db.prepare(`
+    SELECT p.*, s.name AS seller_name, c.name AS category_name
+    FROM products p
+    JOIN sellers s ON p.seller_id = s.id
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE p.is_featured = 1
+    ORDER BY p.created_at DESC LIMIT 8
+  `).all();
+  const topProducts = db.prepare(`
+    SELECT p.*, s.name AS seller_name, c.name AS category_name
+    FROM products p
+    JOIN sellers s ON p.seller_id = s.id
+    LEFT JOIN categories c ON p.category_id = c.id
+    ORDER BY p.rating DESC, p.reviews_count DESC LIMIT 8
+  `).all();
+  res.render('index', { title: 'NexCart — Shop the Future', categories, featuredProducts, topProducts });
 });
 
-// Login Page - default redirects to user
+// Login Pages
 router.get('/login', (req, res) => {
-  res.render('login', { title: 'Login - Event Management System', loginRole: 'user' });
+  res.render('login', { title: 'Login — NexCart', loginRole: 'user' });
 });
 router.get('/login/admin', (req, res) => {
-  res.render('login', { title: 'Admin Login - EMS', loginRole: 'admin' });
+  res.render('login', { title: 'Admin Login — NexCart', loginRole: 'admin' });
 });
 router.get('/login/user', (req, res) => {
-  res.render('login', { title: 'User Login - EMS', loginRole: 'user' });
+  res.render('login', { title: 'Login — NexCart', loginRole: 'user' });
+});
+router.get('/login/seller', (req, res) => {
+  res.render('login', { title: 'Seller Login — NexCart', loginRole: 'seller' });
 });
 router.get('/login/vendor', (req, res) => {
-  res.render('login', { title: 'Vendor Login - EMS', loginRole: 'vendor' });
+  res.redirect('/login/seller');
 });
 
 // Login POST
@@ -35,23 +55,22 @@ router.post('/login', (req, res) => {
     let user;
     if (role === 'admin' || role === 'user') {
       user = db.prepare('SELECT * FROM users WHERE email = ? AND role = ?').get(email, role);
-    } else if (role === 'vendor') {
-      user = db.prepare('SELECT * FROM vendors WHERE email = ?').get(email);
-      if (user) user.role = 'vendor';
+    } else if (role === 'seller') {
+      user = db.prepare('SELECT * FROM sellers WHERE email = ?').get(email);
+      if (user) user.role = 'seller';
     }
 
     if (!user) {
       req.session.error = 'Invalid email or account not found.';
-      return res.redirect('/login');
+      return res.redirect(`/login/${role}`);
     }
 
     const match = bcrypt.compareSync(password, user.password);
     if (!match) {
       req.session.error = 'Invalid password.';
-      return res.redirect('/login');
+      return res.redirect(`/login/${role}`);
     }
 
-    // Set session
     req.session.user = {
       id: user.id,
       name: user.name,
@@ -60,9 +79,8 @@ router.post('/login', (req, res) => {
       category: user.category || null
     };
 
-    // Redirect based on role
     if (role === 'admin') return res.redirect('/admin');
-    if (role === 'vendor') return res.redirect('/vendor');
+    if (role === 'seller') return res.redirect('/seller');
     return res.redirect('/user');
   } catch (err) {
     console.error(err);
@@ -71,32 +89,27 @@ router.post('/login', (req, res) => {
   }
 });
 
-// Admin Signup Page
+// Admin Signup
 router.get('/signup/admin', (req, res) => {
-  res.render('signup-admin', { title: 'Admin Signup - Event Management System' });
+  res.render('signup-admin', { title: 'Admin Signup — NexCart' });
 });
 
-// Admin Signup POST
 router.post('/signup/admin', (req, res) => {
   const { name, email, password } = req.body;
-
   if (!name || !email || !password) {
     req.session.error = 'All fields are required.';
     return res.redirect('/signup/admin');
   }
-
   try {
     const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
     if (existing) {
       req.session.error = 'Email already registered.';
       return res.redirect('/signup/admin');
     }
-
     const hashedPassword = bcrypt.hashSync(password, 10);
     db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(name, email, hashedPassword, 'admin');
-
-    req.session.success = 'Admin account created successfully! Please login.';
-    return res.redirect('/login');
+    req.session.success = 'Admin account created! Please login.';
+    return res.redirect('/login/admin');
   } catch (err) {
     console.error(err);
     req.session.error = 'Signup failed. Please try again.';
@@ -104,31 +117,26 @@ router.post('/signup/admin', (req, res) => {
   }
 });
 
-// User Signup Page
+// User Signup
 router.get('/signup/user', (req, res) => {
-  res.render('signup-user', { title: 'User Signup - Event Management System' });
+  res.render('signup-user', { title: 'Create Account — NexCart' });
 });
 
-// User Signup POST
 router.post('/signup/user', (req, res) => {
   const { name, email, password } = req.body;
-
   if (!name || !email || !password) {
     req.session.error = 'All fields are required.';
     return res.redirect('/signup/user');
   }
-
   try {
     const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
     if (existing) {
       req.session.error = 'Email already registered.';
       return res.redirect('/signup/user');
     }
-
     const hashedPassword = bcrypt.hashSync(password, 10);
     db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(name, email, hashedPassword, 'user');
-
-    req.session.success = 'Account created successfully! Please login.';
+    req.session.success = 'Account created! Please login to start shopping.';
     return res.redirect('/login');
   } catch (err) {
     console.error(err);
@@ -137,36 +145,34 @@ router.post('/signup/user', (req, res) => {
   }
 });
 
-// Vendor Signup Page
+// Seller Signup
+router.get('/signup/seller', (req, res) => {
+  res.render('signup-seller', { title: 'Become a Seller — NexCart' });
+});
 router.get('/signup/vendor', (req, res) => {
-  res.render('signup-vendor', { title: 'Vendor Signup - Event Management System' });
+  res.redirect('/signup/seller');
 });
 
-// Vendor Signup POST
-router.post('/signup/vendor', (req, res) => {
+router.post('/signup/seller', (req, res) => {
   const { name, email, password, category, phone, location } = req.body;
-
   if (!name || !email || !password || !category) {
     req.session.error = 'All fields are required.';
-    return res.redirect('/signup/vendor');
+    return res.redirect('/signup/seller');
   }
-
   try {
-    const existing = db.prepare('SELECT id FROM vendors WHERE email = ?').get(email);
+    const existing = db.prepare('SELECT id FROM sellers WHERE email = ?').get(email);
     if (existing) {
       req.session.error = 'Email already registered.';
-      return res.redirect('/signup/vendor');
+      return res.redirect('/signup/seller');
     }
-
     const hashedPassword = bcrypt.hashSync(password, 10);
-    db.prepare('INSERT INTO vendors (name, email, password, category, phone, location) VALUES (?, ?, ?, ?, ?, ?)').run(name, email, hashedPassword, category, phone || null, location || null);
-
-    req.session.success = 'Vendor account created successfully! Please login.';
-    return res.redirect('/login');
+    db.prepare('INSERT INTO sellers (name, email, password, category, phone, location) VALUES (?, ?, ?, ?, ?, ?)').run(name, email, hashedPassword, category, phone || null, location || null);
+    req.session.success = 'Seller account created! Please login.';
+    return res.redirect('/login/seller');
   } catch (err) {
     console.error(err);
     req.session.error = 'Signup failed. Please try again.';
-    return res.redirect('/signup/vendor');
+    return res.redirect('/signup/seller');
   }
 });
 

@@ -1,31 +1,44 @@
 <%- include('partials/header') %>
 <div class="login-page">
   <div class="login-branding">
-    <div class="login-brand-logo"><span class="material-icons-outlined">event</span><div><strong>EMS</strong><br><small>Event Management System</small></div></div>
-    <div class="login-welcome">Vendor Registration</div>
+    <div class="login-brand-logo"><span class="material-icons-outlined">shopping_bag</span><div><strong>NexCart</strong><br><small>Seller Portal</small></div></div>
+    <div class="login-welcome">Start Selling!</div>
     <div class="login-welcome-bar"></div>
-    <div class="login-desc">Register as a vendor to list your products, manage orders, and grow your event business.</div>
+    <div class="login-desc">Join NexCart's marketplace and reach millions of customers. List your products, manage orders, and grow your business.</div>
     <div class="login-features">
-      <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">inventory_2</span></div><div><h4>List Products</h4><p>Showcase your products & services</p></div></div>
-      <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">trending_up</span></div><div><h4>Grow Business</h4><p>Reach more event organizers</p></div></div>
+      <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">trending_up</span></div><div><h4>Grow Revenue</h4><p>Access millions of shoppers</p></div></div>
+      <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">dashboard</span></div><div><h4>Seller Dashboard</h4><p>Analytics & insights</p></div></div>
+      <div class="login-feature"><div class="login-feature-icon"><span class="material-icons-outlined">payments</span></div><div><h4>Quick Payouts</h4><p>Fast, secure settlements</p></div></div>
     </div>
   </div>
   <div class="login-form-panel">
     <div class="login-form-inner">
-      <div class="login-form-header"><div class="login-icon"><span class="material-icons-outlined">storefront</span></div><div><h1>Vendor Sign Up</h1><p class="login-form-sub">Create your vendor account</p></div></div>
+      <div class="login-form-header">
+        <div class="login-icon"><span class="material-icons-outlined">storefront</span></div>
+        <div><h1>Become a Seller</h1><p class="login-form-sub">Set up your store in minutes</p></div>
+      </div>
       <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
-      <form action="/signup/vendor" method="POST" data-validate>
-        <div class="form-group"><label>Name *</label><div class="input-icon-wrap"><span class="material-icons-outlined">person</span><input type="text" name="name" class="form-control" placeholder="Enter vendor name" required data-label="Name"></div></div>
-        <div class="form-group"><label>Email *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" placeholder="Enter vendor email" required data-label="Email"></div></div>
-        <div class="form-group"><label>Password *</label><div class="input-icon-wrap"><span class="material-icons-outlined">lock</span><input type="password" name="password" class="form-control" placeholder="Enter password" required data-label="Password"></div></div>
-        <div class="form-group"><label>Category *</label><select name="category" class="form-control" required data-label="Category"><option value="">Select Category</option><option value="Catering">Catering</option><option value="Florist">Florist</option><option value="Decoration">Decoration</option><option value="Lighting">Lighting</option></select></div>
-        <div class="form-group"><label>Phone Number</label><div class="input-icon-wrap"><span class="material-icons-outlined">phone</span><input type="text" name="phone" class="form-control" placeholder="Enter phone number"></div></div>
-        <div class="form-group"><label>Location</label><div class="input-icon-wrap"><span class="material-icons-outlined">location_on</span><input type="text" name="location" class="form-control" placeholder="Enter business location"></div></div>
-        <button type="submit" class="btn btn-primary btn-block btn-lg">Sign Up</button>
+      <form action="/signup/seller" method="POST" data-validate>
+        <div class="grid-2">
+          <div class="form-group"><label>Business Name *</label><div class="input-icon-wrap"><span class="material-icons-outlined">storefront</span><input type="text" name="name" class="form-control" placeholder="Your Store Name" required data-label="Name"></div></div>
+          <div class="form-group"><label>Category *</label><select name="category" class="form-control" required data-label="Category">
+            <option value="">Select Category</option>
+            <option value="Electronics">Electronics</option><option value="Fashion">Fashion</option>
+            <option value="Home & Kitchen">Home & Kitchen</option><option value="Beauty">Beauty</option>
+            <option value="Sports">Sports</option><option value="Books">Books</option>
+          </select></div>
+        </div>
+        <div class="form-group"><label>Email *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" placeholder="business@example.com" required data-label="Email"></div></div>
+        <div class="grid-2">
+          <div class="form-group"><label>Phone</label><div class="input-icon-wrap"><span class="material-icons-outlined">phone</span><input type="text" name="phone" class="form-control" placeholder="9876543210"></div></div>
+          <div class="form-group"><label>Location</label><div class="input-icon-wrap"><span class="material-icons-outlined">location_on</span><input type="text" name="location" class="form-control" placeholder="City, State"></div></div>
+        </div>
+        <div class="form-group"><label>Password *</label><div class="input-icon-wrap"><span class="material-icons-outlined">lock</span><input type="password" name="password" class="form-control" placeholder="Min 6 characters" required data-label="Password" minlength="6"></div></div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg mt-2"><span class="material-icons-outlined">storefront</span> Create Seller Account</button>
       </form>
       <div class="login-divider">or</div>
-      <a href="/login/vendor" class="btn btn-outline btn-block">Already have an account? Login</a>
-      <div class="login-footer">© 2025 Event Management System. All rights reserved.</div>
+      <a href="/login/seller" class="btn btn-outline btn-block">Already a seller? Login</a>
+      <div class="login-footer">© 2025 NexCart. All rights reserved.</div>
     </div>
   </div>
 </div>

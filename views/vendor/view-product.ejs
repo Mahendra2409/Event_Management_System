@@ -1,32 +1,10 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-vendor') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-      <div class="page-header"><h1>Your Items</h1><p>View and manage your products</p></div>
-      <% if (products && products.length > 0) { %>
-      <div class="products-grid">
-        <% products.forEach(p => { %>
-        <div class="product-card">
-          <div class="product-image"><img src="/uploads/<%= p.image %>" alt="<%= p.name %>" onerror="this.parentElement.innerHTML='📦'"></div>
-          <div class="product-info">
-            <div class="product-name"><%= p.name %></div>
-            <div class="product-price">₹<%= p.price.toFixed(2) %></div>
-            <div style="display:flex;gap:6px">
-              <a href="/vendor/update-item/<%= p.id %>" class="btn btn-sm btn-outline" style="flex:1">Edit</a>
-              <form action="/vendor/delete-item/<%= p.id %>" method="POST" style="flex:1"><button type="submit" class="btn btn-sm btn-danger btn-block" onclick="return confirm('Delete?')">Delete</button></form>
-            </div>
-          </div>
-        </div>
-        <% }) %>
-      </div>
-      <% } else { %>
-      <div class="card card-body text-center"><p style="color:var(--text-tri)">No products yet. <a href="/vendor/add-item" style="color:var(--primary)">Add your first product</a>.</p></div>
-      <% } %>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
-  </div>
-</div>
+<div class="app-layout"><%- include('../partials/sidebar-vendor') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <div class="page-header"><h1>Your Products</h1></div>
+  <% if (products && products.length > 0) { %>
+  <div class="table-container"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Action</th></tr></thead><tbody>
+    <% products.forEach(p => { %><tr><td><div style="width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--muted)"><img src="/uploads/<%= p.image %>" style="width:100%;height:100%;object-fit:cover" onerror="this.src=''"></div></td><td><strong><%= p.name %></strong></td><td><%= p.category_name || '-' %></td><td>₹<%= p.price.toFixed(2) %><% if (p.discount_price) { %><br><small style="color:var(--success)">₹<%= p.discount_price.toFixed(2) %></small><% } %></td><td><%= p.stock %></td><td><a href="/seller/update-item/<%= p.id %>" class="btn btn-sm btn-outline">Edit</a></td></tr><% }) %>
+  </tbody></table></div>
+  <% } else { %><div class="card card-body text-center" style="padding:48px"><h3>No products yet</h3><a href="/seller/add-item" class="btn btn-primary mt-2">Add Product</a></div><% } %>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

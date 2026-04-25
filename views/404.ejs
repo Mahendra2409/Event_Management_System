@@ -1,7 +1,8 @@
 <%- include('partials/header') %>
-<div class="error-page">
-  <h1>404</h1>
-  <p>The page you're looking for doesn't exist or has been moved.</p>
-  <a href="/" class="btn btn-primary btn-lg">Back to Home</a>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center">
+  <span class="material-icons-outlined" style="font-size:80px;color:var(--text-tri);margin-bottom:16px">search_off</span>
+  <h1 style="font-size:48px;font-weight:800;color:var(--text);margin-bottom:8px">404</h1>
+  <p style="font-size:16px;color:var(--text-sec);margin-bottom:24px">Oops! The page you're looking for doesn't exist.</p>
+  <a href="/" class="btn btn-primary btn-lg"><span class="material-icons-outlined" style="font-size:18px">home</span> Back to Home</a>
 </div>
 <%- include('partials/footer') %>

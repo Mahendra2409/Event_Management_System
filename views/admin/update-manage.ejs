@@ -1,49 +1,21 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-admin') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
-      <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
-      <div class="page-header"><h1>Manage <%= type.charAt(0).toUpperCase() + type.slice(1) %>s</h1><p>Update or delete existing <%= type %> accounts</p></div>
-
-      <% if (items && items.length > 0) { %>
-      <div class="table-container">
-        <table>
-          <thead><tr><th>ID</th><th>Name</th><th>Email</th><% if (type === 'vendor') { %><th>Category</th><% } %><th>Actions</th></tr></thead>
-          <tbody>
-          <% items.forEach(item => { %>
-            <tr>
-              <td>#<%= item.id %></td>
-              <td>
-                <form action="/admin/manage/update/<%= type %>" method="POST" style="display:inline-flex;gap:4px;align-items:center">
-                  <input type="hidden" name="id" value="<%= item.id %>">
-                  <input type="text" name="name" value="<%= item.name %>" class="form-control" style="width:130px;padding:6px 8px;font-size:13px" required>
-              </td>
-              <td><input type="email" name="email" value="<%= item.email %>" class="form-control" style="width:180px;padding:6px 8px;font-size:13px" required></td>
-              <% if (type === 'vendor') { %>
-              <td>
-                <select name="category" class="form-control" style="width:130px;padding:6px 8px;font-size:13px">
-                  <option value="Catering" <%= item.category === 'Catering' ? 'selected' : '' %>>Catering</option>
-                  <option value="Florist" <%= item.category === 'Florist' ? 'selected' : '' %>>Florist</option>
-                  <option value="Decoration" <%= item.category === 'Decoration' ? 'selected' : '' %>>Decoration</option>
-                  <option value="Lighting" <%= item.category === 'Lighting' ? 'selected' : '' %>>Lighting</option>
-                </select>
-              </td>
-              <% } %>
-              <td><div style="display:flex;gap:4px"><button type="submit" class="btn btn-sm btn-primary">Update</button></form>
-              <form action="/admin/manage/delete/<%= type %>/<%= item.id %>" method="POST" style="display:inline"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button></form></div></td>
-            </tr>
-          <% }) %>
-          </tbody>
-        </table>
-      </div>
-      <% } else { %>
-      <div class="card card-body text-center"><p style="color:var(--text-tri)">No <%= type %>s found. <a href="/admin/manage/add/<%= type %>" style="color:var(--primary)">Add one</a></p></div>
-      <% } %>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
-  </div>
-</div>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <div class="page-header"><h1>Update <%= type.charAt(0).toUpperCase() + type.slice(1) %>s</h1></div>
+  <% if (items && items.length > 0) { %>
+  <div class="table-container"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><% if (type === 'seller') { %><th>Category</th><% } %><th>Actions</th></tr></thead><tbody>
+    <% items.forEach(item => { %>
+    <tr><form action="/admin/manage/update/<%= type %>" method="POST">
+      <input type="hidden" name="id" value="<%= item.id %>">
+      <td>#<%= item.id %></td>
+      <td><input type="text" name="name" value="<%= item.name %>" class="form-control" style="padding:6px 10px;width:auto"></td>
+      <td><input type="email" name="email" value="<%= item.email %>" class="form-control" style="padding:6px 10px;width:auto"></td>
+      <% if (type === 'seller') { %><td><select name="category" class="form-control" style="padding:6px 10px;width:auto"><option><%= item.category %></option><option>Electronics</option><option>Fashion</option><option>Home & Kitchen</option><option>Beauty</option><option>Sports</option><option>Books</option></select></td><% } %>
+      <td style="display:flex;gap:6px"><button type="submit" class="btn btn-sm btn-primary">Save</button></form><form action="/admin/manage/delete/<%= type %>/<%= item.id %>" method="POST"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')"><span class="material-icons-outlined" style="font-size:14px">delete</span></button></form></td>
+    </tr>
+    <% }) %>
+  </tbody></table></div>
+  <% } else { %><div class="card card-body text-center" style="padding:48px"><h3>No <%= type %>s found</h3></div><% } %>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

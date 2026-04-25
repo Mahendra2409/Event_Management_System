@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+<div class="app-layout">
+  <%- include('../partials/sidebar-user') %>
+  <div class="main-area">
+    <%- include('../partials/topbar') %>
+    <div class="content">
+      <div class="page-header"><h1>My Inquiries</h1><p>Product inquiries sent to sellers</p></div>
+      <% if (inquiries && inquiries.length > 0) { %>
+      <div class="table-container"><table><thead><tr><th>Product</th><th>Seller</th><th>Message</th><th>Status</th><th>Date</th></tr></thead><tbody>
+        <% inquiries.forEach(i => { %>
+        <tr>
+          <td><strong><%= i.product_name %></strong></td>
+          <td><%= i.seller_name %></td>
+          <td><%= i.message || '-' %></td>
+          <td><span class="status-badge <%= i.status === 'resolved' ? 'status-delivered' : 'status-processing' %>"><%= i.status %></span></td>
+          <td><%= new Date(i.created_at).toLocaleDateString() %></td>
+        </tr>
+        <% }) %>
+      </tbody></table></div>
+      <% } else { %><div class="card card-body text-center" style="padding:48px"><span class="material-icons-outlined" style="font-size:48px;color:var(--text-tri)">help_outline</span><h3 style="margin:12px 0">No inquiries yet</h3></div><% } %>
+    </div>
+    <div class="app-footer">© 2025 NexCart. All rights reserved.</div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

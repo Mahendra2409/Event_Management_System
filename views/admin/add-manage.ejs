@@ -1,33 +1,18 @@
 <%- include('../partials/header') %>
-<div class="app-layout">
-  <%- include('../partials/sidebar-admin') %>
-  <div class="main-area">
-    <%- include('../partials/topbar') %>
-    <div class="content">
-      <div class="page-header"><h1>Add <%= type.charAt(0).toUpperCase() + type.slice(1) %></h1><p>Add a new <%= type %> to the system</p></div>
-      <div class="card" style="max-width:500px">
-        <div class="card-header"><h2>Add <%= type.charAt(0).toUpperCase() + type.slice(1) %></h2></div>
-        <div class="card-body">
-          <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
-          <form action="/admin/manage/add/<%= type %>" method="POST" data-validate>
-            <div class="form-group"><label>Name *</label><input type="text" name="name" class="form-control" placeholder="Enter name" required data-label="Name"></div>
-            <div class="form-group"><label>Email *</label><input type="email" name="email" class="form-control" placeholder="Enter email" required data-label="Email"></div>
-            <div class="form-group"><label>Password *</label><input type="password" name="password" class="form-control" placeholder="Enter password" required data-label="Password"></div>
-            <% if (type === 'vendor') { %>
-            <div class="form-group"><label>Category *</label>
-              <select name="category" class="form-control" required data-label="Category">
-                <option value="">Select Category</option>
-                <option value="Catering">Catering</option><option value="Florist">Florist</option>
-                <option value="Decoration">Decoration</option><option value="Lighting">Lighting</option>
-              </select>
-            </div>
-            <% } %>
-            <div class="btn-row"><a href="/admin/maintain-<%= type %>" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary">Add <%= type.charAt(0).toUpperCase() + type.slice(1) %></button></div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <div class="app-footer">© 2025 Event Management System. All rights reserved.</div>
-  </div>
-</div>
+<div class="app-layout"><%- include('../partials/sidebar-admin') %><div class="main-area"><%- include('../partials/topbar') %><div class="content">
+  <% if (locals.success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <% if (locals.error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <div class="page-header"><h1>Add <%= type.charAt(0).toUpperCase() + type.slice(1) %></h1></div>
+  <div class="card" style="max-width:560px"><div class="card-body">
+    <form action="/admin/manage/add/<%= type %>" method="POST" data-validate>
+      <div class="form-group"><label>Name *</label><div class="input-icon-wrap"><span class="material-icons-outlined">person</span><input type="text" name="name" class="form-control" required data-label="Name"></div></div>
+      <div class="form-group"><label>Email *</label><div class="input-icon-wrap"><span class="material-icons-outlined">mail</span><input type="email" name="email" class="form-control" required data-label="Email"></div></div>
+      <div class="form-group"><label>Password *</label><div class="input-icon-wrap"><span class="material-icons-outlined">lock</span><input type="password" name="password" class="form-control" required data-label="Password"></div></div>
+      <% if (type === 'seller') { %>
+      <div class="form-group"><label>Category *</label><select name="category" class="form-control" required><option value="">Select</option><option>Electronics</option><option>Fashion</option><option>Home & Kitchen</option><option>Beauty</option><option>Sports</option><option>Books</option></select></div>
+      <% } %>
+      <div class="btn-row mt-2"><a href="/admin/maintain-<%= type === 'seller' ? 'seller' : 'user' %>" class="btn btn-outline">Cancel</a><button type="submit" class="btn btn-primary">Add <%= type %></button></div>
+    </form>
+  </div></div>
+</div><div class="app-footer">© 2025 NexCart.</div></div></div>
 <%- include('../partials/footer') %>

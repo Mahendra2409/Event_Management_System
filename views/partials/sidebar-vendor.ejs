@@ -1,30 +1,30 @@
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-vendor-welcome">
-    <div class="sidebar-vendor-avatar"><%= typeof user !== 'undefined' && user.name ? user.name.charAt(0).toUpperCase() : 'V' %></div>
-    <div class="sidebar-vendor-label">Welcome Vendor</div>
-    <div class="sidebar-vendor-name"><%= typeof user !== 'undefined' ? user.name : 'Vendor' %></div>
+  <div class="sidebar-seller-welcome">
+    <div class="sidebar-seller-avatar"><%= typeof user !== 'undefined' && user.name ? user.name.charAt(0).toUpperCase() : 'S' %></div>
+    <div class="sidebar-seller-label">Seller Dashboard</div>
+    <div class="sidebar-seller-name"><%= typeof user !== 'undefined' ? user.name : 'Seller' %></div>
     <% if (typeof user !== 'undefined' && user.category) { %>
-      <span class="sidebar-vendor-cat"><%= user.category %></span>
+      <span class="sidebar-seller-cat"><%= user.category %></span>
     <% } %>
   </div>
   <nav class="sidebar-nav">
-    <a href="/vendor" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
-      <span class="material-icons-outlined">home</span> Dashboard
+    <a href="/seller" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
+      <span class="material-icons-outlined">dashboard</span> Dashboard
     </a>
-    <a href="/vendor/items" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'items' ? ' active' : '' %>">
-      <span class="material-icons-outlined">inventory_2</span> Your Items
+    <a href="/seller/items" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'items' ? ' active' : '' %>">
+      <span class="material-icons-outlined">inventory_2</span> Products
     </a>
-    <a href="/vendor/add-item" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'add-item' ? ' active' : '' %>">
-      <span class="material-icons-outlined">add_box</span> Add New Item
+    <a href="/seller/add-item" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'add-item' ? ' active' : '' %>">
+      <span class="material-icons-outlined">add_box</span> Add Product
     </a>
-    <a href="/vendor/transactions" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'transactions' ? ' active' : '' %>">
-      <span class="material-icons-outlined">swap_horiz</span> Transaction
+    <a href="/seller/product-status" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'product-status' ? ' active' : '' %>">
+      <span class="material-icons-outlined">local_shipping</span> Orders
     </a>
-    <a href="/vendor/product-status" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'product-status' ? ' active' : '' %>">
-      <span class="material-icons-outlined">local_offer</span> Product Status
+    <a href="/seller/transactions" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'transactions' ? ' active' : '' %>">
+      <span class="material-icons-outlined">payments</span> Transactions
     </a>
-    <a href="/vendor/request-items" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'requests' ? ' active' : '' %>">
-      <span class="material-icons-outlined">description</span> Request Item
+    <a href="/seller/inquiries" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'inquiries' ? ' active' : '' %>">
+      <span class="material-icons-outlined">question_answer</span> Inquiries
     </a>
     <div class="sidebar-divider"></div>
     <a href="/logout" class="sidebar-link sidebar-logout">

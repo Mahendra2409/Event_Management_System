@@ -1,17 +1,23 @@
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <span class="material-icons-outlined">event</span>
-    <div><strong>EMS</strong><span>Event Management</span></div>
+    <span class="material-icons-outlined">shopping_bag</span>
+    <div><strong>NexCart</strong><span>Admin Panel</span></div>
   </div>
   <nav class="sidebar-nav">
     <a href="/admin" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? ' active' : '' %>">
-      <span class="material-icons-outlined">home</span> Dashboard
+      <span class="material-icons-outlined">dashboard</span> Dashboard
     </a>
     <a href="/admin/maintain-user" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'maintain-user' ? ' active' : '' %>">
-      <span class="material-icons-outlined">people</span> Maintain User
+      <span class="material-icons-outlined">people</span> Manage Users
     </a>
-    <a href="/admin/maintain-vendor" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'maintain-vendor' ? ' active' : '' %>">
-      <span class="material-icons-outlined">storefront</span> Maintain Vendor
+    <a href="/admin/maintain-seller" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'maintain-seller' ? ' active' : '' %>">
+      <span class="material-icons-outlined">storefront</span> Manage Sellers
+    </a>
+    <a href="/admin/categories" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'categories' ? ' active' : '' %>">
+      <span class="material-icons-outlined">category</span> Categories
+    </a>
+    <a href="/admin/orders" class="sidebar-link<%= typeof activePage !== 'undefined' && activePage === 'orders' ? ' active' : '' %>">
+      <span class="material-icons-outlined">receipt_long</span> All Orders
     </a>
     <div class="sidebar-divider"></div>
     <a href="/logout" class="sidebar-link sidebar-logout">
